@@ -5,18 +5,17 @@ import { getUserDto } from './dto/get-user.dto';
 import { createUserDto } from './dto/create-user.dto';
 import { updateUserDto } from './dto/update-user.dto';
 
-@Controller('users')
+@Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {} // Inject the user service
 
   @Get()
-
   async getUsers(): Promise<getUserDto[]> {
     // Fetch users from the service
     const users: any[] = await this.userService.findAll();
 
     // Map users to getUserDto instances
-    const userDtos: getUserDto[] = users.map(user => ({
+    const userDtos: getUserDto[] = users.map((user) => ({
       username: user.username,
       displayName: user.displayName,
       tel: user.tel,
@@ -60,6 +59,6 @@ export class UserController {
     @Param('id')
     id: string,
   ): Promise<User> {
-    return this.deleteUser(id);
+    return this.userService.deleteById(id);
   }
 }

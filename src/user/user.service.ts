@@ -39,4 +39,7 @@ export class UserService {
       throw new HttpException('User not found.', HttpStatus.NOT_FOUND);
     }
   }
+  async deleteById(id: string): Promise<User> {
+    return await this.UserModel.findByIdAndDelete(id);
+  }
 }
