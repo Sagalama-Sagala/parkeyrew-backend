@@ -10,6 +10,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {} // Inject the user service
 
   @Get()
+
   async getUsers(): Promise<getUserDto[]> {
     // Fetch users from the service
     const users: any[] = await this.userService.findAll();
@@ -24,6 +25,11 @@ export class UserController {
 
     return userDtos;
   }
+
+  async getAllUsers(): Promise<User[]> {
+    return this.userService.findAll();
+  }
+
   @Get(':id')
   async getUser(
     @Param('id')
