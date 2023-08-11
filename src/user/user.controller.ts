@@ -28,7 +28,6 @@ export class UserController {
   ): Promise<User> {
     return this.userService.create(user);
   }
-//jh
   @Put(':id')
   async updateUser(
     @Param('id')
