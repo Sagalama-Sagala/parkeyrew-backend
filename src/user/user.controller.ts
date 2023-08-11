@@ -4,6 +4,7 @@ import { User } from './schemas/user.schema';
 import { getUserDto } from './dto/get-user.dto';
 import { createUserDto } from './dto/create-user.dto';
 import { updateUserDto } from './dto/update-user.dto';
+import { identity } from 'rxjs';
 
 @Controller('users')
 export class UserController {
