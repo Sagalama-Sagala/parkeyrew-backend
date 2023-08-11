@@ -25,6 +25,7 @@ export class UserController {
 
     return userDtos;
   }
+//kuyboss
   @Get(':id')
   async getUser(
     @Param('id')
@@ -39,5 +40,14 @@ export class UserController {
     user: createUserDto,
   ): Promise<User> {
     return this.userService.create(user);
+  }
+  @Put(':id')
+  async updateUser(
+    @Param('id')
+    id: string,
+    @Body()
+    user: updateUserDto,
+  ): Promise<User> {
+    return this.userService.updateById(id, user);
   }
 }
