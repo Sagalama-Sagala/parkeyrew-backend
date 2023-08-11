@@ -12,7 +12,7 @@ export class UserController {
   async getAllUsers(): Promise<User[]> {
     return this.userService.findAll();
   }
-
+//6778279889
   @Get(':id')
   async getUser(
     @Param('id')
