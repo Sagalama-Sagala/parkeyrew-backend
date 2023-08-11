@@ -1,10 +1,9 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './schemas/user.schema';
 import { getUserDto } from './dto/get-user.dto';
 import { createUserDto } from './dto/create-user.dto';
 import { updateUserDto } from './dto/update-user.dto';
-import { identity } from 'rxjs';
 
 @Controller('users')
 export class UserController {
@@ -13,7 +12,7 @@ export class UserController {
   @Get()
   async getUsers(): Promise<getUserDto[]> {
     // Fetch users from the service
-    const users: any[] = await this.userService.getUsers();
+    const users: any[] = await this.userService.findAll();
 
     // Map users to getUserDto instances
     const userDtos: getUserDto[] = users.map(user => ({
@@ -25,7 +24,6 @@ export class UserController {
 
     return userDtos;
   }
-//kuyboss
   @Get(':id')
   async getUser(
     @Param('id')
@@ -49,5 +47,13 @@ export class UserController {
     user: updateUserDto,
   ): Promise<User> {
     return this.userService.updateById(id, user);
+  }
+
+  @Delete(':id')
+  async deleteUser(
+    @Param('id')
+    id: string,
+  ): Promise<User> {
+    return this.deleteUser(id);
   }
 }
