@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './schemas/user.schema';
 import { getUserDto } from './dto/get-user.dto';
@@ -10,13 +18,12 @@ export class UserController {
   constructor(private readonly userService: UserService) {} // Inject the user service
 
   @Get()
-
   async getUsers(): Promise<getUserDto[]> {
     // Fetch users from the service
     const users: any[] = await this.userService.findAll();
 
     // Map users to getUserDto instances
-    const userDtos: getUserDto[] = users.map(user => ({
+    const userDtos: getUserDto[] = users.map((user) => ({
       username: user.username,
       displayName: user.displayName,
       tel: user.tel,
