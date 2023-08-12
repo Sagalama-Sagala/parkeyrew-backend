@@ -50,6 +50,7 @@ export class UserController {
   ): Promise<User> {
     return this.userService.create(user);
   }
+
   @Put(':id')
   async updateUser(
     @Param('id')
