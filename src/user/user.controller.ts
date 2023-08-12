@@ -19,11 +19,9 @@ export class UserController {
 
   @Get()
   async getUsers(): Promise<getUserDto[]> {
-    // Fetch users from the service
     const users: any[] = await this.userService.findAll();
-
-    // Map users to getUserDto instances
     const userDtos: getUserDto[] = users.map((user) => ({
+      id: user.id,
       username: user.username,
       displayName: user.displayName,
       tel: user.tel,
@@ -69,5 +67,4 @@ export class UserController {
   ): Promise<User> {
     return this.userService.deleteById(id);
   }
-  //hello
 }
