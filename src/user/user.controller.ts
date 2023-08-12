@@ -13,7 +13,7 @@ import { getUserDto } from './dto/get-user.dto';
 import { createUserDto } from './dto/create-user.dto';
 import { updateUserDto } from './dto/update-user.dto';
 
-@Controller('users')
+@Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {} // Inject the user service
 
@@ -67,6 +67,6 @@ export class UserController {
     @Param('id')
     id: string,
   ): Promise<User> {
-    return this.deleteUser(id);
+    return this.userService.deleteById(id);
   }
 }
