@@ -6,18 +6,24 @@ import {
   Param,
   Post,
   Put,
+  // Put,
+  UseGuards,
 } from '@nestjs/common';
 import { Product } from './schemas/product.schema';
 import { ProductService } from './product.service';
-import { createProductDto } from './dto/create-product.dto';
-import { updateProductDto } from './dto/update-product.dto';
+// import { updateProductDto } from './dto/update-product.dto';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiSecurity,
   ApiTags,
 } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { createProductDto } from './dto/create-product.dto';
+import { User } from 'src/decorators/user.decorator';
+import { updateProductDto } from './dto/update-product.dto';
 
 @ApiTags('Product')
 @Controller('product')
@@ -37,17 +43,21 @@ export class ProductController {
 
   @ApiCreatedResponse({
     description: 'Created user object as response',
-    type: Product,
+    type: createProductDto,
   })
   @ApiBadRequestResponse({
     description: 'Product cannot add. Try again',
   })
+  @ApiSecurity('JWT-auth')
+  @UseGuards(JwtAuthGuard)
   @Post()
   async createProduct(
     @Body()
     product: createProductDto,
+    @User('userId')
+    userId: any,
   ): Promise<Product> {
-    return this.productService.create(product);
+    return this.productService.create(product, userId);
   }
 
   @ApiCreatedResponse({
@@ -72,6 +82,8 @@ export class ProductController {
   @ApiNotFoundResponse({
     description: 'Invalid product ID, Try again',
   })
+  @ApiSecurity('JWT-auth')
+  @UseGuards(JwtAuthGuard)
   @Put(':id')
   async updateProduct(
     @Param('id')
@@ -88,6 +100,8 @@ export class ProductController {
   @ApiOkResponse({
     description: 'Delete OK.',
   })
+  @ApiSecurity('JWT-auth')
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async deleteProduct(
     @Param('id')
