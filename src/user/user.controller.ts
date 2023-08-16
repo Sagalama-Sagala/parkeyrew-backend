@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './schemas/user.schema';
@@ -16,8 +17,10 @@ import {
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiSecurity,
   ApiTags,
 } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @ApiTags('User')
 @Controller('user')
@@ -29,6 +32,8 @@ export class UserController {
     type: User,
     isArray: true,
   })
+  @ApiSecurity('JWT-auth')
+  @UseGuards(JwtAuthGuard)
   @Get()
   async getUsers(): Promise<User[]> {
     return this.userService.findAll();
@@ -41,6 +46,8 @@ export class UserController {
   @ApiNotFoundResponse({
     description: 'Invalid user ID, Try again',
   })
+  @ApiSecurity('JWT-auth')
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   async getUser(
     @Param('id')
@@ -71,6 +78,8 @@ export class UserController {
   @ApiNotFoundResponse({
     description: 'Invalid user ID, Try again',
   })
+  @ApiSecurity('JWT-auth')
+  @UseGuards(JwtAuthGuard)
   @Put(':id')
   async updateUser(
     @Param('id')
@@ -87,6 +96,8 @@ export class UserController {
   @ApiOkResponse({
     description: 'Delete OK.',
   })
+  @ApiSecurity('JWT-auth')
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async deleteUser(
     @Param('id')

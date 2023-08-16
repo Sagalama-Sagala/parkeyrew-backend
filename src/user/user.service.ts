@@ -28,6 +28,15 @@ export class UserService {
     }
   }
 
+  async findByUsername(username: string): Promise<User> {
+    try {
+      const user = await this.UserModel.findOne({ username: username }).exec();
+      return user;
+    } catch (error) {
+      throw new HttpException('User not found.', HttpStatus.NOT_FOUND);
+    }
+  }
+
   async updateById(id: string, user: User): Promise<User> {
     try {
       return await this.UserModel.findOneAndUpdate({ _id: id }, user, {
@@ -40,6 +49,10 @@ export class UserService {
   }
 
   async deleteById(id: string): Promise<User> {
-    return await this.UserModel.findByIdAndDelete(id);
+    try {
+      return await this.UserModel.findByIdAndDelete(id);
+    } catch (error) {
+      throw new HttpException('User not found.', HttpStatus.NOT_FOUND);
+    }
   }
 }
