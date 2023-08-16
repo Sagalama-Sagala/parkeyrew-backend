@@ -2,6 +2,8 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schemas/user.schema';
 import mongoose from 'mongoose';
+import { createUserDto } from './dto/create-user.dto';
+import { updateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -14,7 +16,7 @@ export class UserService {
     return await this.UserModel.find();
   }
 
-  async create(user: User): Promise<User> {
+  async create(user: createUserDto): Promise<User> {
     const res = await this.UserModel.create(user);
     return res;
   }
@@ -37,7 +39,7 @@ export class UserService {
     }
   }
 
-  async updateById(id: string, user: User): Promise<User> {
+  async updateById(id: string, user: updateUserDto): Promise<User> {
     try {
       return await this.UserModel.findOneAndUpdate({ _id: id }, user, {
         new: true,
