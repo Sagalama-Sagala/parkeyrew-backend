@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  # app service for your backend
+  app:
+    # container_name: backend1
+    build:
+      context: ./
+      dockerfile: dockerfile
+    environment:
+      MONGO_URI: ${MONGO_URI}
+      JWT_TOKEN : ${JWT_TOKEN}
+      JWT_EXPIRE : ${JWT_EXPIRE}
+    env_file:
+      - ./.env
+    ports:
+      - '4000:4000'
+   
