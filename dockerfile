@@ -5,11 +5,11 @@ FROM node:lts as builder
 WORKDIR /usr/src/app
 
 # Install app dependencies
-COPY package.json yarn.lock ./
+COPY --chown=node:node package.json yarn.lock ./
 
 RUN yarn install --frozen-lockfile
 
-COPY . .
+COPY --chown=node:node  . .
 
 RUN yarn build
 
@@ -23,10 +23,10 @@ USER node
 WORKDIR /usr/src/app
 
 # Install app dependencies
-COPY package.json yarn.lock ./
+COPY --chown=node:node package.json yarn.lock ./
 
 RUN yarn install --production --frozen-lockfile
 
-COPY --from=builder /usr/src/app/dist ./dist
+COPY --chown=node:node --from=builder /usr/src/app/dist ./dist
 
 CMD [ "node", "dist/main.js" ]
