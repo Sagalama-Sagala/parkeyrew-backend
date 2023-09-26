@@ -15,4 +15,4 @@ jobs:
           echo "MONGO_URI=${{ secrets.MONGO_URI  }}" > .env
           echo "JWT_SECRET=${{ secrets.JWT_SECRET  }}" >> .env
           echo "JWT_EXPIRE=${{ secrets.JWT_EXPIRE  }}" >> .env
-          docker-compose up --build -d
+          sudo docker-compose up --build -d
