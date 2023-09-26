@@ -9,7 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - run: |
-          cd backend/
+          cd /home/g64010017/actions-runner/_work/parkeyrew-backend/parkeyrew-backend
           git reset --hard HEAD
           git pull origin main
           echo "MONGO_URI=${{ secrets.MONGO_URI  }}" > .env
