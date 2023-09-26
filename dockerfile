@@ -7,9 +7,14 @@ WORKDIR /usr/src/app
 # Install app dependencies
 COPY --chown=node:node package.json yarn.lock ./
 
+USER node 
+
 RUN yarn install --frozen-lockfile
 
 COPY --chown=node:node  . .
+
+USER node 
+
 
 RUN yarn build
 
@@ -17,6 +22,7 @@ FROM node:lts-slim
 
 ENV NODE_ENV production
 ENV PORT=4000
+
 USER node
 
 # Create app directory
