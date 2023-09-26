@@ -7,7 +7,6 @@ jobs:
   deploy-docker:
     runs-on: self-hosted
     steps:
-      # checkout branch
       - uses: actions/checkout@master
       - run: |
           cd /home/g64010017/backend
