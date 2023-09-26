@@ -1,0 +1,19 @@
+name: deploy-backend
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy-docker:
+    runs-on: self-hosted
+    steps:
+      # checkout branch
+      - uses: actions/checkout@master
+      - run: |
+          cd /home/g64010017/backend
+          git reset --hard HEAD
+          git pull origin main
+          echo "MONGO_URI=${{ secrets.MONGO_URI  }}" > .env
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET  }}" >> .env
+          echo "JWT_EXPIRE=${{ secrets.JWT_EXPIRE  }}" >> .env
+          docker compose up --build -d
