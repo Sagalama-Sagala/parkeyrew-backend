@@ -1,4 +1,5 @@
 import {
+  MessageBody,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
@@ -32,6 +33,11 @@ export class ChatGateway {
   @SubscribeMessage('message')
   handleMessage(client: any, payload: any): string {
     return 'test socket';
+  }
+
+  @SubscribeMessage('chat')
+  handleChat(@MessageBody() message: string) {
+    this.server.emit('chat', message);
   }
 
   async handleConnection(socket: Socket) {
