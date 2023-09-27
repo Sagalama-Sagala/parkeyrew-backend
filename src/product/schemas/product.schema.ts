@@ -12,11 +12,11 @@ export class Product {
   owner: User;
 
   @ApiProperty()
-  @Prop({required: true})
+  @Prop({ required: true })
   name: string;
 
   @ApiProperty()
-  @Prop({required: true})
+  @Prop({ required: true })
   price: number;
 
   @ApiProperty()
@@ -24,35 +24,35 @@ export class Product {
   description: string;
 
   @ApiProperty()
-  @Prop({required: true})
+  @Prop({ required: true })
   brand: string;
 
   @ApiProperty()
-  @Prop({required: true})
+  @Prop({ required: true })
   color: string;
 
   @ApiProperty()
-  @Prop({required: true})
+  @Prop({ required: true })
   size: string;
 
   @ApiProperty()
-  @Prop({required: true})
+  @Prop({ required: true })
   category: string;
 
   @ApiProperty()
-  @Prop({required: true})
+  @Prop({ required: true })
   sendFrom: string;
 
   @ApiProperty()
-  @Prop({required: true})
+  @Prop({ required: true })
   remain: number;
 
   @ApiProperty()
-  @Prop({default: 0})
+  @Prop({ default: 0 })
   viewCount: number;
 
   @ApiProperty()
-  @Prop({default: 0})
+  @Prop({ default: 0 })
   likeCount: number;
 }
 
