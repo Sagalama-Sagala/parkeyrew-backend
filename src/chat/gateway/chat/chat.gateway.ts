@@ -23,21 +23,14 @@ export class ChatGateway {
   @WebSocketServer()
   server: Server;
 
-  title: string[] = [];
-
   constructor(
     private authService: AuthService,
     private userService: UserService,
   ) {}
 
   @SubscribeMessage('message')
-  handleMessage(client: any, payload: any): string {
-    return 'test socket';
-  }
-
-  @SubscribeMessage('chat')
   handleChat(@MessageBody() message: string) {
-    this.server.emit('chat', message);
+    this.server.emit('message', message);
   }
 
   async handleConnection(socket: Socket) {
@@ -49,9 +42,6 @@ export class ChatGateway {
 
       if (!user) {
         return this.disconnect(socket);
-      } else {
-        this.title.push('value ' + Math.random().toString());
-        this.server.emit('message', this.title);
       }
     } catch {
       return this.disconnect(socket);

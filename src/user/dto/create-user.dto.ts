@@ -4,8 +4,6 @@ import {
   IsNumberString,
   IsString,
   Matches,
-  Max,
-  Min,
   MinLength,
 } from 'class-validator';
 
