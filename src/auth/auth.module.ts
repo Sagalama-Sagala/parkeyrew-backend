@@ -18,7 +18,9 @@ import { JwtStrategy } from './strategy/jwt.strategy';
       signOptions: { expiresIn: process.env.JWT_EXPIRE },
     }),
   ],
+
   controllers: [AuthController],
   providers: [AuthService, LocalStrategy, JwtStrategy],
+  exports: [AuthService],
 })
 export class AuthModule {}

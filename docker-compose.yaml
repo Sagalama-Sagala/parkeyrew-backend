@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.3'
 services:
   # app service for your backend
   app:
@@ -13,5 +13,5 @@ services:
     env_file:
       - ./.env
     ports:
-      - '4000:4000'
+      - '4000:3000'
    

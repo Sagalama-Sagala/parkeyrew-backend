@@ -3,7 +3,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import mongoose from 'mongoose';
 import { Product } from 'src/product/schemas/product.schema';
 
-
 @Schema({
   timestamps: true,
 })
