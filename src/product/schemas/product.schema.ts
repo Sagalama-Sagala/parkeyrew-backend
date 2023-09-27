@@ -7,7 +7,6 @@ import { User } from 'src/user/schemas/user.schema';
   timestamps: true,
 })
 export class Product {
-  
   @ApiProperty()
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   owner: User;
