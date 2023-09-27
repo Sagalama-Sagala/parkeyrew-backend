@@ -63,8 +63,8 @@ export class UserController {
   @ApiBadRequestResponse({
     description: 'User cannot register. Try again',
   })
-  @Post()
-  async createUser(
+  @Post('register')
+  async register(
     @Body()
     user: createUserDto,
   ): Promise<User> {
