@@ -1,38 +1,29 @@
-
-FROM node:lts as builder
-
-# Create app directory
-WORKDIR /usr/src/app
-
-# Install app dependencies
-COPY --chown=node:node package.json yarn.lock ./
-
-USER node 
-
-RUN yarn install 
-
-COPY --chown=node:node  . .
-
-USER node 
-
-
-RUN yarn build
-
-FROM node:lts-slim
-
-ENV NODE_ENV production
-ENV PORT=4000
+                                                                               
+FROM node:16-alpine as builder
 
 USER node
 
-# Create app directory
-WORKDIR /usr/src/app
+WORKDIR /home/node
 
-# Install app dependencies
-COPY --chown=node:node package.json yarn.lock ./
+COPY package.json yarn.lock ./
 
-RUN yarn install --production 
+RUN yarn --frozen-lockfile
 
-COPY --chown=node:node --from=builder /usr/src/app/dist ./dist
+COPY . /home/node/
 
-CMD [ "node", "dist/main.js" ]
+RUN yarn build
+
+FROM node:16-alpine
+
+USER node
+WORKDIR /home/node
+
+COPY --from=builder /home/node/package*.json /home/node/
+COPY --from=builder /home/node/yarn.lock /home/node/
+COPY --from=builder /home/node/dist/ /home/node/dist/
+COPY --from=builder /home/node/node_modules/ /home/node/node_modules/
+
+
+CMD ["node", "dist/main.js"]
+
+
