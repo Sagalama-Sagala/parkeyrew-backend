@@ -8,24 +8,52 @@ import { User } from 'src/user/schemas/user.schema';
 })
 export class Product {
   @ApiProperty()
-  @Prop()
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
+  owner: User;
+
+  @ApiProperty()
+  @Prop({ required: true })
   name: string;
 
   @ApiProperty()
-  @Prop()
-  discription: string;
-
-  @ApiProperty()
-  @Prop()
+  @Prop({ required: true })
   price: number;
 
   @ApiProperty()
   @Prop()
+  description: string;
+
+  @ApiProperty()
+  @Prop({ required: true })
+  brand: string;
+
+  @ApiProperty()
+  @Prop({ required: true })
+  color: string;
+
+  @ApiProperty()
+  @Prop({ required: true })
   size: string;
 
   @ApiProperty()
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
-  owner: User;
+  @Prop({ required: true })
+  category: string;
+
+  @ApiProperty()
+  @Prop({ required: true })
+  sendFrom: string;
+
+  @ApiProperty()
+  @Prop({ required: true })
+  remain: number;
+
+  @ApiProperty()
+  @Prop({ default: 0 })
+  viewCount: number;
+
+  @ApiProperty()
+  @Prop({ default: 0 })
+  likeCount: number;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

@@ -4,8 +4,6 @@ import {
   IsNumberString,
   IsString,
   Matches,
-  Max,
-  Min,
   MinLength,
 } from 'class-validator';
 
@@ -20,7 +18,6 @@ export class createUserDto {
   @IsString()
   @MinLength(8)
   @IsNotEmpty()
-  @Matches(/^\$2[ayb]\$[\d]{2}\$[./A-Za-z0-9]{53}$/)
   readonly password: string;
 
   @ApiProperty()
@@ -31,8 +28,6 @@ export class createUserDto {
 
   @ApiProperty()
   @IsNumberString()
-  @Min(10)
-  @Max(10)
   @IsString()
   @Matches(/[0-9_-]{10}/)
   readonly tel: string;
