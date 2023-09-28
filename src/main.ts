@@ -26,11 +26,7 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   app.enableCors({
-<<<<<<< HEAD
     origin: ['http://localhost:3000', 'http://localhost:5173','https://parkeyrew-frontend.chompukyrc.com','https://parkeyrew-backend.chompukyrc.com'],
-=======
-    origin: ['http://localhost:3000', 'http://localhost:5173'],
->>>>>>> parent of e16ebdb (product origin cors)
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   });
