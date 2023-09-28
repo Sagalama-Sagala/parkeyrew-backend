@@ -1,20 +1,17 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   HttpException,
   HttpStatus,
   Param,
   Post,
-  Put,
+  Req,
   Res,
-  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './schemas/user.schema';
 import { createUserDto } from './dto/create-user.dto';
-import { updateUserDto } from './dto/update-user.dto';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
@@ -23,7 +20,6 @@ import {
   ApiSecurity,
   ApiTags,
 } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { Response } from 'express';
 
 @ApiTags('User')
@@ -37,27 +33,34 @@ export class UserController {
     isArray: true,
   })
   @ApiSecurity('JWT-auth')
-  @UseGuards(JwtAuthGuard)
   @Get()
   async getUsers(): Promise<User[]> {
     return this.userService.findAll();
   }
 
-  @ApiCreatedResponse({
-    description: 'Get user object as response',
+  @ApiOkResponse({
+    description: 'Get user successfully',
     type: User,
   })
   @ApiNotFoundResponse({
-    description: 'Invalid user ID, Try again',
+    description: 'User not found',
   })
   @ApiSecurity('JWT-auth')
-  @UseGuards(JwtAuthGuard)
-  @Get(':id')
-  async getUser(
-    @Param('id')
-    id: string,
-  ): Promise<User> {
-    return this.userService.findById(id);
+  @Get('get-user-by-id')
+  async getUserById(
+    @Req() req: Request,
+    @Res() res: Response
+  ){
+    try{
+      //const id = req.user;
+
+    }
+    catch(err){
+      res.status(500).json({
+        message: 'Error to get user by id',
+        data: err.message,
+      });
+    }
   }
 
   @ApiCreatedResponse({
@@ -97,40 +100,5 @@ export class UserController {
         data: err.message,
       });
     }
-  }
-
-  @ApiCreatedResponse({
-    description: 'Updated user object as response',
-    type: User,
-  })
-  @ApiNotFoundResponse({
-    description: 'Invalid user ID, Try again',
-  })
-  @ApiSecurity('JWT-auth')
-  @UseGuards(JwtAuthGuard)
-  @Put(':id')
-  async updateUser(
-    @Param('id')
-    id: string,
-    @Body()
-    user: updateUserDto,
-  ): Promise<User> {
-    return this.userService.updateById(id, user);
-  }
-
-  @ApiNotFoundResponse({
-    description: 'Invalid user ID, Try again',
-  })
-  @ApiOkResponse({
-    description: 'Delete OK.',
-  })
-  @ApiSecurity('JWT-auth')
-  @UseGuards(JwtAuthGuard)
-  @Delete(':id')
-  async deleteUser(
-    @Param('id')
-    id: string,
-  ): Promise<User> {
-    return this.userService.deleteById(id);
   }
 }

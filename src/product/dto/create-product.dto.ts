@@ -6,14 +6,49 @@ export class createProductDto {
   @IsNotEmpty()
   @IsString()
   readonly name: string;
+
   @ApiProperty()
-  @IsString()
-  readonly discription: string;
-  @ApiProperty()
-  @IsPositive()
-  readonly price: number;
-  @ApiProperty()
-  @IsString()
   @IsNotEmpty()
-  readonly size: string;
+  @IsPositive()
+  price: number;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsPositive()
+  deliveryFee: number;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  description: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  brand: string; 
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  color: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  size: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  category: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  sendFrom: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsPositive()
+  remain: number;
 }

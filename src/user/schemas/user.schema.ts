@@ -29,6 +29,10 @@ export class User {
   phone: string;
 
   @ApiProperty()
+  @Prop()
+  description: string;
+
+  @ApiProperty()
   @Prop({ default: 0 })
   reviewStar: number;
 
