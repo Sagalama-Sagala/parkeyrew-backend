@@ -24,18 +24,15 @@ import { AuthMiddleware } from './middleware/auth.middleware';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(AuthMiddleware)
-      .exclude(
-        {
-          path: '/user/register',
-          method: RequestMethod.POST,
-        },
-        {
-          path: '/auth/login',
-          method: RequestMethod.POST,
-        },
-      )
-      .forRoutes('');
+    consumer.apply(AuthMiddleware).exclude(
+      {
+        path: '/user/register',
+        method: RequestMethod.POST,
+      },
+      {
+        path: '/auth/login',
+        method: RequestMethod.POST,
+      },
+    );
   }
 }
