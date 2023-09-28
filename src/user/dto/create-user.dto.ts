@@ -5,7 +5,7 @@ import {
   IsString,
   Matches,
   MinLength,
-  MaxLength
+  MaxLength,
 } from 'class-validator';
 
 export class createUserDto {
