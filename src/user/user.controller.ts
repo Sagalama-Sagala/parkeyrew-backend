@@ -95,7 +95,7 @@ export class UserController {
     @Body()
     user: createUserDto,
     @Res()
-    res: Response,
+    res: any,
   ) {
     try {
       const username = await this.userService.findByUsername(user.username);
