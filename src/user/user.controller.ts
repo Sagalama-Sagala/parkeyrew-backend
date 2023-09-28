@@ -84,10 +84,10 @@ export class UserController {
       }
       else{
         const createdUser = await this.userService.create(user);
-        const {password, ...result} = createdUser; 
+        createdUser.password = "";
         res.status(201).json({
           message: "Created user successfully",
-          data: result
+          data: createdUser
         });
       }
     }
