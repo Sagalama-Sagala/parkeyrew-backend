@@ -73,14 +73,22 @@ export class UserController {
     user: createUserDto,
     @Res()
     res: Response,
-  ): Promise<User> {
+  ){
     try{
       const username = await this.userService.findByUsername(user.username);
       if(username != null) {
-        throw new HttpException("Username already in use",400)
+        res.status(400).json({
+          message: "Username already in use",
+          data: user.username
+        });
       }
       else{
-        return await this.userService.create(user);
+        const createdUser = await this.userService.create(user);
+        const {password, ...result} = createdUser; 
+        res.status(201).json({
+          message: "Created user successfully",
+          data: result
+        });
       }
     }
     catch(err){

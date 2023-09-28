@@ -21,7 +21,8 @@ export class UserService {
     try{
       const password = await bcrypt.hash(user.password, 10);
       user.password = password;
-      return await this.UserModel.create(user);
+      const createdUser = await this.UserModel.create(user);
+      return createdUser;
     }
     catch(err){
       throw new HttpException(err.message,500);
