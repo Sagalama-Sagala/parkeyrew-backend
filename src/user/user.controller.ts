@@ -8,6 +8,7 @@ import {
   Res,
 } from '@nestjs/common';
 import { UserService } from './user.service';
+import { ProductService } from '../product/product.service';
 import { User } from './schemas/user.schema';
 import { createUserDto } from './dto/create-user.dto';
 import {
@@ -23,7 +24,10 @@ import { Response } from 'express';
 @ApiTags('User')
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly productService: ProductService
+  ) {}
 
   @ApiCreatedResponse({
     description: 'Get user objects as response',
@@ -36,30 +40,48 @@ export class UserController {
     return this.userService.findAll();
   }
 
-  @ApiOkResponse({
-    description: 'Get user successfully',
-    type: User,
-  })
-  @ApiNotFoundResponse({
-    description: 'User not found',
-  })
-  @ApiSecurity('JWT-auth')
-  @Get('get-user-by-id')
-  async getUserById(
-    @Req() req: Request,
-    @Res() res: Response
-  ){
-    try{
-      //const id = req.user;
-
-    }
-    catch(err){
-      res.status(500).json({
-        message: 'Error to get user by id',
-        data: err.message,
-      });
-    }
-  }
+  // @ApiOkResponse({
+  //   description: 'Get user successfully',
+  //   type: User,
+  // })
+  // @ApiNotFoundResponse({
+  //   description: 'User not found',
+  // })
+  // @ApiSecurity('JWT-auth')
+  // @Get('get-user-by-id')
+  // async getUserById(
+  //   @Req() req: any,
+  //   @Res() res: Response
+  // ){
+  //   try{
+  //     const userId = req.userId;
+  //     const user = await this.userService.findById(userId);
+  //     if(!user){
+  //       res.status(404).json({
+  //         message: 'User not found',
+  //         data: userId,
+  //       });
+  //     }
+  //     const products = await this.productService.findAllByOwnerId(userId);
+  //     res.status(200).json({
+  //       message: "Get user by id was successful",
+  //       data: {
+  //         username: user.username,
+  //         reviewStar: user.reviewStar,
+  //         followerCount: user.followerList.length,
+  //         followingCount: user.followingList.length,
+  //         description: user.description,
+  //         products: products
+  //       }
+  //     });
+  //   }
+  //   catch(err){
+  //     res.status(500).json({
+  //       message: 'Error to get user by id',
+  //       data: err.message,
+  //     });
+  //   }
+  // }
 
   @ApiCreatedResponse({
     description: 'Created user object as response',

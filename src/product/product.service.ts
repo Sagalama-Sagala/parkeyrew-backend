@@ -1,7 +1,7 @@
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 import { Product } from './schemas/product.schema';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable} from '@nestjs/common';
 import { createProductDto } from './dto/create-product.dto';
 import { UserService } from 'src/user/user.service';
 import { updateProductDto } from './dto/update-product.dto';
@@ -17,6 +17,11 @@ export class ProductService {
   async findAll(): Promise<Product[]> {
     const product = await this.ProuctModel.find();
     return product;
+  }
+
+  async findAllByOwnerId(userId: string): Promise<Product[]> {
+    const products = await this.ProuctModel.find({ owner: userId });
+    return products;
   }
 
   async create(product: createProductDto, userId: string): Promise<Product> {

@@ -25,13 +25,13 @@ export class createUserDto {
   @IsString()
   @IsNotEmpty()
   @Matches(/[a-zA-Z]/)
-  readonly name: string;
+  readonly firstname: string;
 
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
   @Matches(/[a-zA-Z]/)
-  readonly surname: string;
+  readonly lastname: string;
 
   @ApiProperty()
   @IsNumberString()

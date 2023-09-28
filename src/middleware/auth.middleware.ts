@@ -26,7 +26,7 @@ export class AuthMiddleware implements NestMiddleware {
       const decodedToken = await this.authService.verifyJwt(tokenArray[1]);
       const user: User = await this.userService.findById(decodedToken.id);
       if (user) {
-        req.user = decodedToken.id;
+        req['userId'] = decodedToken.id;
         next();
       } else {
         throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
