@@ -18,14 +18,13 @@ export class UserService {
   }
 
   async create(user: createUserDto): Promise<User> {
-    try{
+    try {
       const password = await bcrypt.hash(user.password, 10);
       user.password = password;
       const createdUser = await this.UserModel.create(user);
       return createdUser;
-    }
-    catch(err){
-      throw new HttpException(err.message,500);
+    } catch (err) {
+      throw new HttpException(err.message, 500);
     }
   }
 

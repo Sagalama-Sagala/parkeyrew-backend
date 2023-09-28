@@ -3,8 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpException,
-  HttpStatus,
   Param,
   Post,
   Put,
@@ -73,27 +71,25 @@ export class UserController {
     user: createUserDto,
     @Res()
     res: Response,
-  ){
-    try{
+  ) {
+    try {
       const username = await this.userService.findByUsername(user.username);
-      if(username != null) {
+      if (username != null) {
         res.status(400).json({
-          message: "Username already in use",
-          data: user.username
+          message: 'Username already in use',
+          data: user.username,
         });
-      }
-      else{
+      } else {
         const createdUser = await this.userService.create(user);
-        const {password, ...result} = createdUser; 
+        createdUser.password = '';
         res.status(201).json({
-          message: "Created user successfully",
-          data: result
+          message: 'Created user successfully',
+          data: createdUser,
         });
       }
-    }
-    catch(err){
+    } catch (err) {
       res.status(500).json({
-        message: "Error to register",
+        message: 'Error to register',
         data: err.message,
       });
     }
