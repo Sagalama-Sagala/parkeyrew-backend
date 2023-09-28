@@ -46,8 +46,8 @@ export class UserController {
   @ApiSecurity('JWT-auth')
   @Get('get-user-by-id')
   async getUserById(
-    @Req() req: Request,
-    @Res() res: Response
+    @Req() req: any,
+    @Res() res: any
   ){
     try{
       //const id = req.user;
@@ -73,7 +73,7 @@ export class UserController {
     @Body()
     user: createUserDto,
     @Res()
-    res: Response,
+    res: any,
   ) {
     try {
       const username = await this.userService.findByUsername(user.username);
