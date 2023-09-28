@@ -3,9 +3,12 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
+  HttpStatus,
   Param,
   Post,
   Put,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -21,6 +24,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { Response } from 'express';
 
 @ApiTags('User')
 @Controller('user')
@@ -67,8 +71,24 @@ export class UserController {
   async register(
     @Body()
     user: createUserDto,
+    @Res()
+    res: Response,
   ): Promise<User> {
-    return this.userService.create(user);
+    try{
+      const username = await this.userService.findByUsername(user.username);
+      if(username != null) {
+        throw new HttpException("Username already in use",400)
+      }
+      else{
+        return await this.userService.create(user);
+      }
+    }
+    catch(err){
+      res.status(500).json({
+        message: "Error to register",
+        data: err.message,
+      });
+    }
   }
 
   @ApiCreatedResponse({

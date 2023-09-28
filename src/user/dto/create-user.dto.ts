@@ -5,6 +5,7 @@ import {
   IsString,
   Matches,
   MinLength,
+  MaxLength
 } from 'class-validator';
 
 export class createUserDto {
@@ -18,18 +19,24 @@ export class createUserDto {
   @IsString()
   @MinLength(8)
   @IsNotEmpty()
-  readonly password: string;
+  password: string;
 
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  @Matches(/[a-zA-Z0-9_-]{2,20}/)
-  readonly displayName: string;
+  @Matches(/[a-zA-Z]/)
+  readonly name: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  @Matches(/[a-zA-Z]/)
+  readonly surname: string;
 
   @ApiProperty()
   @IsNumberString()
   @IsString()
-  @Matches(/[0-9_-]{10}/)
-  readonly tel: string;
+  @MaxLength(10)
+  @Matches(/[0-9]{10}/)
+  readonly phone: string;
 }
-//

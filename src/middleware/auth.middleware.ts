@@ -31,7 +31,8 @@ export class AuthMiddleware implements NestMiddleware {
       } else {
         throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
       }
-    } catch {
+    } catch(err) {
+      console.log(err.message);
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
   }
