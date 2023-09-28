@@ -8,28 +8,52 @@ import { Product } from 'src/product/schemas/product.schema';
 })
 export class User {
   @ApiProperty()
-  @Prop()
+  @Prop({ required: true })
   username: string;
 
   @ApiProperty()
-  @Prop()
+  @Prop({ required: true })
   password: string;
 
   @ApiProperty()
-  @Prop()
-  displayName: string;
+  @Prop({ required: true })
+  name: string;
+
+  @ApiProperty()
+  @Prop({ required: true })
+  surname: string;
+
+  @ApiProperty()
+  @Prop({ required: true })
+  phone: string;
 
   @ApiProperty()
   @Prop()
-  tel: string;
+  description: string;
 
   @ApiProperty()
-  @Prop()
-  email: string;
+  @Prop({ default: 0 })
+  reviewStar: number;
 
   @ApiProperty()
-  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }] })
-  products: Product[];
+  @Prop({
+    type: [{ type: mongoose.Schema.ObjectId, ref: 'Product' }],
+    default: [],
+  })
+  wishList: Product[];
+
+  @ApiProperty()
+  @Prop({
+    type: [{ type: mongoose.Schema.ObjectId, ref: 'User' }],
+    default: [],
+  })
+  followingList: User[];
+
+  @ApiProperty()
+  @Prop({
+    type: [{ type: mongoose.Schema.ObjectId, ref: 'User' }],
+    default: [],
+  })
+  followerList: User[];
 }
-
 export const UserSchema = SchemaFactory.createForClass(User);

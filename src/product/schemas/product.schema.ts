@@ -20,12 +20,16 @@ export class Product {
   price: number;
 
   @ApiProperty()
-  @Prop()
+  @Prop({ required: true })
+  deliveryFee: number;
+
+  @ApiProperty()
+  @Prop({ required: true })
   description: string;
 
   @ApiProperty()
   @Prop({ required: true })
-  brand: string;
+  brand: string; 
 
   @ApiProperty()
   @Prop({ required: true })

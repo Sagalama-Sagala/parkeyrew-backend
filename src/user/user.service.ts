@@ -4,6 +4,7 @@ import { User } from './schemas/user.schema';
 import mongoose from 'mongoose';
 import { createUserDto } from './dto/create-user.dto';
 import { updateUserDto } from './dto/update-user.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -17,8 +18,14 @@ export class UserService {
   }
 
   async create(user: createUserDto): Promise<User> {
-    const res = await this.UserModel.create(user);
-    return res;
+    try {
+      const password = await bcrypt.hash(user.password, 10);
+      user.password = password;
+      const createdUser = await this.UserModel.create(user);
+      return createdUser;
+    } catch (err) {
+      throw new HttpException(err.message, 500);
+    }
   }
 
   async findById(id: string): Promise<User> {
@@ -31,12 +38,8 @@ export class UserService {
   }
 
   async findByUsername(username: string): Promise<User> {
-    try {
-      const user = await this.UserModel.findOne({ username: username }).exec();
-      return user;
-    } catch (error) {
-      throw new HttpException('User not found.', HttpStatus.NOT_FOUND);
-    }
+    const user = await this.UserModel.findOne({ username: username }).exec();
+    return user;
   }
 
   async updateById(id: string, user: updateUserDto): Promise<User> {
