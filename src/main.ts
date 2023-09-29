@@ -29,6 +29,7 @@ async function bootstrap() {
     origin: [
       'http://localhost:3000',
       'http://localhost:5173',
+      'https://parkeyrew-frontend.chompukyrc.com',
       'https://parkeyrew-backend.chompukyrc.com',
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],

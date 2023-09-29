@@ -17,11 +17,11 @@ export class User {
 
   @ApiProperty()
   @Prop({ required: true })
-  name: string;
+  firstname: string;
 
   @ApiProperty()
   @Prop({ required: true })
-  surname: string;
+  lastname: string;
 
   @ApiProperty()
   @Prop({ required: true })
