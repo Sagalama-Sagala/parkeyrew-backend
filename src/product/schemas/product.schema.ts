@@ -29,7 +29,7 @@ export class Product {
 
   @ApiProperty()
   @Prop({ required: true })
-  brand: string; 
+  brand: string;
 
   @ApiProperty()
   @Prop({ required: true })

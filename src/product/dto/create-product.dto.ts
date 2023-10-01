@@ -10,45 +10,45 @@ export class createProductDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsPositive()
-  price: number;
+  readonly price: number;
 
   @ApiProperty()
   @IsNotEmpty()
   @IsPositive()
-  deliveryFee: number;
+  readonly deliveryFee: number;
 
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  description: string;
+  readonly description: string;
 
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  brand: string; 
+  readonly brand: string; 
 
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  color: string;
+  readonly color: string;
 
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  size: string;
+  readonly size: string;
 
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  category: string;
+  readonly category: string;
 
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  sendFrom: string;
+  readonly sendFrom: string;
 
   @ApiProperty()
   @IsNotEmpty()
   @IsPositive()
-  remain: number;
+  readonly remain: number;
 }
