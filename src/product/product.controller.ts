@@ -38,7 +38,7 @@ export class ProductController {
   })
   @Get()
   async getProducts(): Promise<Product[]> {
-    const products = this.productService.findAll();
+    const products = await this.productService.findAll();
     return products;
   }
 

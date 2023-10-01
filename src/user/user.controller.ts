@@ -48,8 +48,8 @@ export class UserController {
     description: 'User not found',
   })
   @ApiSecurity('JWT-auth')
-  @Get('get-user-by-id')
-  async getUserById(
+  @Get('get-user-page-by-id')
+  async getUserPageById(
     @Req() req: any,
     @Res() res: Response
   ){
@@ -91,8 +91,8 @@ export class UserController {
     description: 'User not found',
   })
   @ApiSecurity('JWT-auth')
-  @Get('get-shop-by-id/:id')
-  async getShopById(
+  @Get('get-shop-page-by-id/:id')
+  async getShopPageById(
     @Param('id') id: string,
     @Res() res: Response
   ){
