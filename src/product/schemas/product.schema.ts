@@ -29,7 +29,7 @@ export class Product {
 
   @ApiProperty()
   @Prop({ required: true })
-  brand: string; 
+  brand: string;
 
   @ApiProperty()
   @Prop({ required: true })
@@ -53,7 +53,7 @@ export class Product {
 
   @ApiProperty()
   @Prop({ default: 0 })
-  viewCount: number; 
+  viewCount: number;
 
   @ApiProperty()
   @Prop({ default: 0 })

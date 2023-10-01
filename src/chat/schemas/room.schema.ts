@@ -8,6 +8,10 @@ import { User } from 'src/user/schemas/user.schema';
 })
 export class Room {
   @ApiProperty()
+  @Prop({ type: mongoose.Schema.Types.ObjectId })
+  _id: mongoose.Types.ObjectId;
+
+  @ApiProperty()
   @Prop()
   name: string;
 
@@ -16,8 +20,18 @@ export class Room {
   description: string;
 
   @ApiProperty()
-  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
-  products: User[];
+  @Prop({
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    default: [],
+  })
+  users: User[];
+
+  @ApiProperty()
+  @Prop({
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Message' }],
+    default: [],
+  })
+  messages: [];
 }
 
-export const UserSchema = SchemaFactory.createForClass(Room);
+export const RoomSchema = SchemaFactory.createForClass(Room);

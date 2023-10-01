@@ -1,12 +1,17 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import mongoose from 'mongoose';
+import { Room } from 'src/chat/schemas/room.schema';
 import { Product } from 'src/product/schemas/product.schema';
 
 @Schema({
   timestamps: true,
 })
 export class User {
+  @ApiProperty()
+  @Prop({ type: mongoose.Schema.Types.ObjectId })
+  _id: mongoose.Types.ObjectId;
+
   @ApiProperty()
   @Prop({ required: true })
   username: string;
@@ -55,5 +60,12 @@ export class User {
     default: [],
   })
   followerList: User[];
+
+  @ApiProperty()
+  @Prop({
+    type: [{ type: mongoose.Schema.ObjectId, ref: 'Room' }],
+    default: [],
+  })
+  chatRooms: Room[];
 }
 export const UserSchema = SchemaFactory.createForClass(User);
