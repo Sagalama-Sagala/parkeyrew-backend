@@ -1,13 +1,14 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose from 'mongoose';
 import { User } from 'src/user/schemas/user.schema';
+import { Room } from './room.schema';
+import mongoose from 'mongoose';
 
 @Schema({
   timestamps: true,
 })
-export class Message {
+export class JoinedRoom {
   @Prop()
-  text: string;
+  socketId: string;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
@@ -19,7 +20,7 @@ export class Message {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Room',
   })
-  room: 'Room';
+  room: Room;
 }
 
-export const MessageSchema = SchemaFactory.createForClass(Message);
+export const JoinedRoomSchema = SchemaFactory.createForClass(JoinedRoom);

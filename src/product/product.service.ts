@@ -1,7 +1,7 @@
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 import { Product } from './schemas/product.schema';
-import { HttpException, HttpStatus, Inject, Injectable} from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { createProductDto } from './dto/create-product.dto';
 import { UserService } from 'src/user/user.service';
 import { updateProductDto } from './dto/update-product.dto';
@@ -24,8 +24,11 @@ export class ProductService {
     return products;
   }
 
-  async findTop4ProductsOfUser(userId: string,productId: string){
-    const products = await this.ProductModel.find({ owner:userId, _id: { $ne : productId} });
+  async findTop4ProductsOfUser(userId: string, productId: string) {
+    const products = await this.ProductModel.find({
+      owner: userId,
+      _id: { $ne: productId },
+    });
     return products;
   }
 
@@ -61,15 +64,14 @@ export class ProductService {
     }
   }
 
-  async updateViewcount(id: string,viewCount: number){
-    try{
+  async updateViewcount(id: string, viewCount: number) {
+    try {
       return await this.ProductModel.findOneAndUpdate(
         { _id: id },
-        { $set: { viewCount: viewCount} },
-        { new: true, runValidators: true }
+        { $set: { viewCount: viewCount } },
+        { new: true, runValidators: true },
       );
-    }
-    catch (err){
+    } catch (err) {
       throw new HttpException('Product not found.', HttpStatus.NOT_FOUND);
     }
   }

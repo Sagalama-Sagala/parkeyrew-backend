@@ -9,7 +9,6 @@ import { Product } from 'src/product/schemas/product.schema';
 })
 export class User {
   @ApiProperty()
-  @Prop({ type: mongoose.Schema.Types.ObjectId })
   _id: mongoose.Types.ObjectId;
 
   @ApiProperty()

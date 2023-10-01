@@ -5,21 +5,15 @@ import { User } from 'src/user/schemas/user.schema';
 @Schema({
   timestamps: true,
 })
-export class Message {
+export class ConnectedUser {
   @Prop()
-  text: string;
+  socketId: string;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
   })
   user: User;
-
-  @Prop({
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Room',
-  })
-  room: 'Room';
 }
 
-export const MessageSchema = SchemaFactory.createForClass(Message);
+export const ConnectedUserSchema = SchemaFactory.createForClass(ConnectedUser);
