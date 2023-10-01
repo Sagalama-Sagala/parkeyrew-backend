@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Post,
-  Req,
-  Res,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req, Res } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ProductService } from '../product/product.service';
 import { User } from './schemas/user.schema';
@@ -26,7 +18,7 @@ import { Response } from 'express';
 export class UserController {
   constructor(
     private readonly userService: UserService,
-    private readonly productService: ProductService
+    private readonly productService: ProductService,
   ) {}
 
   @ApiCreatedResponse({
@@ -49,14 +41,11 @@ export class UserController {
   })
   @ApiSecurity('JWT-auth')
   @Get('get-user-by-id')
-  async getUserById(
-    @Req() req: any,
-    @Res() res: Response
-  ){
-    try{
+  async getUserById(@Req() req: any, @Res() res: Response) {
+    try {
       const userId = req.userId;
       const user = await this.userService.findById(userId);
-      if(!user){
+      if (!user) {
         res.status(404).json({
           message: 'User not found',
           data: userId,
@@ -64,18 +53,17 @@ export class UserController {
       }
       const products = await this.productService.findAllByOwnerId(userId);
       res.status(200).json({
-        message: "Get user by id was successful",
+        message: 'Get user by id was successful',
         data: {
           username: user.username,
           reviewStar: user.reviewStar,
           followerCount: user.followerList.length,
           followingCount: user.followingList.length,
           description: user.description,
-          products: products
-        }
+          products: products,
+        },
       });
-    }
-    catch(err){
+    } catch (err) {
       res.status(500).json({
         message: 'Error to get user by id',
         data: err.message,
@@ -92,14 +80,11 @@ export class UserController {
   })
   @ApiSecurity('JWT-auth')
   @Get('get-shop-by-id/:id')
-  async getShopById(
-    @Param('id') id: string,
-    @Res() res: Response
-  ){
-    try{
+  async getShopById(@Param('id') id: string, @Res() res: Response) {
+    try {
       const userId = id;
       const user = await this.userService.findById(userId);
-      if(!user){
+      if (!user) {
         res.status(404).json({
           message: 'User not found',
           data: userId,
@@ -107,18 +92,17 @@ export class UserController {
       }
       const products = await this.productService.findAllByOwnerId(userId);
       res.status(200).json({
-        message: "Get shop by id was successful",
+        message: 'Get shop by id was successful',
         data: {
           username: user.username,
           reviewStar: user.reviewStar,
           followerCount: user.followerList.length,
           followingCount: user.followingList.length,
           description: user.description,
-          products: products
-        }
+          products: products,
+        },
       });
-    }
-    catch(err){
+    } catch (err) {
       res.status(500).json({
         message: 'Error to get shop by id',
         data: err.message,
