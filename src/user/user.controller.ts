@@ -41,11 +41,8 @@ export class UserController {
   })
   @ApiSecurity('JWT-auth')
   @Get('get-user-by-id')
-  async getUserById(
-    @Req() req: any,
-    @Res() res: Response
-  ){
-    try{
+  async getUserById(@Req() req: any, @Res() res: Response) {
+    try {
       const userId = req.userId;
       const user = await this.userService.findById(userId);
       if (!user) {
@@ -83,11 +80,8 @@ export class UserController {
   })
   @ApiSecurity('JWT-auth')
   @Get('get-shop-by-id/:id')
-  async getShopById(
-    @Param('id') id: string,
-    @Res() res: Response
-  ){
-    try{
+  async getShopById(@Param('id') id: string, @Res() res: Response) {
+    try {
       const userId = id;
       const user = await this.userService.findById(userId);
       if (!user) {

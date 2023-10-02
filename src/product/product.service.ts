@@ -1,7 +1,7 @@
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 import { Product } from './schemas/product.schema';
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { createProductDto } from './dto/create-product.dto';
 import { UserService } from 'src/user/user.service';
 import { updateProductDto } from './dto/update-product.dto';
