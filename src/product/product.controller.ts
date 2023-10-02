@@ -7,6 +7,7 @@ import {
   Post,
   Req,
   Res,
+  Query,
 } from '@nestjs/common';
 import { Product } from './schemas/product.schema';
 import { UserService } from 'src/user/user.service';
@@ -19,16 +20,18 @@ import {
   ApiOkResponse,
   ApiSecurity,
   ApiTags,
+  ApiQuery,
 } from '@nestjs/swagger';
 import { createProductDto } from './dto/create-product.dto';
 import { Response } from 'express';
+import { PaginationParameters } from './dto/pagination-params';
 
 @ApiTags('Product')
 @Controller('product')
 export class ProductController {
   constructor(
     private readonly productService: ProductService,
-    private readonly userService: UserService
+    private readonly userService: UserService,
   ) {}
 
   @ApiOkResponse({
@@ -43,6 +46,40 @@ export class ProductController {
   }
 
   @ApiOkResponse({
+    description: 'Get product home page as response',
+    type: Product,
+    isArray: true,
+  })
+  @Get('homepage')
+  async getProductsLatest(): Promise<Product[]> {
+    const products = this.productService.findLatest();
+    return products;
+  }
+
+  @ApiOkResponse({
+    description: 'Get product objects as response',
+    type: Product,
+    isArray: true,
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: true,
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'skip',
+    required: false,
+    type: Number,
+  })
+  @Get('all')
+  async getPagination(
+    @Query() getProductsParams: PaginationParameters,
+  ): Promise<Product[]> {
+    const products = this.productService.findByPagination(getProductsParams);
+    return products;
+  }
+
+  @ApiOkResponse({
     description: 'Get info product page successfully',
   })
   @ApiNotFoundResponse({
@@ -52,7 +89,7 @@ export class ProductController {
   @Get('get-info-product-page/:id')
   async getInfoProductPage(
     @Param('id') id: string,
-    @Res() res: Response
+    @Res() res: Response,
   ){
     try{
       const product = await this.productService.findById(id);

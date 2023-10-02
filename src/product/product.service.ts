@@ -5,6 +5,7 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { createProductDto } from './dto/create-product.dto';
 import { UserService } from 'src/user/user.service';
 import { updateProductDto } from './dto/update-product.dto';
+import { PaginationParameters } from './dto/pagination-params';
 
 @Injectable()
 export class ProductService {
@@ -17,6 +18,28 @@ export class ProductService {
   async findAll(): Promise<Product[]> {
     const product = await this.ProductModel.find();
     return product;
+  }
+
+  async findLatest(): Promise<Product[] | undefined> {
+    const products = await this.ProductModel.find().sort({ _id: -1 }).limit(4);
+    return products;
+  }
+
+  async findByPagination(
+    paginationParams: PaginationParameters,
+  ): Promise<Product[] | undefined> {
+    const products = await this.ProductModel.find(
+      {},
+      {},
+      {
+        lean: true,
+        sort: {
+          createdAt: -1,
+        },
+        ...paginationParams,
+      },
+    );
+    return products;
   }
 
   async findAllByOwnerId(userId: string): Promise<Product[]> {
