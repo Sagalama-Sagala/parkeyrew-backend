@@ -1,11 +1,12 @@
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
-import { Product } from './schemas/product.schema';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { createProductDto } from './dto/create-product.dto';
 import { UserService } from 'src/user/user.service';
-import { updateProductDto } from './dto/update-product.dto';
-import { PaginationParameters } from './dto/pagination-params';
+import { Product } from 'src/product/schemas/product.schema';
+import { PaginationParameters } from 'src/product/dto/pagination-params';
+import { createProductDto } from 'src/product/dto/create-product.dto';
+import { updateUserDto } from 'src/user/dto/update-user.dto';
+import { TagService } from '../tag/tag.service';
 
 @Injectable()
 export class ProductService {
@@ -13,10 +14,11 @@ export class ProductService {
     @InjectModel(Product.name)
     private ProductModel: mongoose.Model<Product>,
     private userService: UserService,
+    private tagService: TagService,
   ) {}
 
   async findAll(): Promise<Product[]> {
-    const product = await this.ProductModel.find();
+    const product = await this.ProductModel.find().populate('owner');
     return product;
   }
 
@@ -76,7 +78,7 @@ export class ProductService {
     return user;
   }
 
-  async updateById(id: string, product: updateProductDto): Promise<Product> {
+  async updateById(id: string, product: updateUserDto): Promise<Product> {
     try {
       return await this.ProductModel.findOneAndUpdate({ _id: id }, product, {
         new: true,

@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 import { User } from 'src/user/schemas/user.schema';
+import { Room } from './room.schema';
 
 @Schema({
   timestamps: true,
@@ -19,7 +20,7 @@ export class Message {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Room',
   })
-  room: 'Room';
+  room: Room;
 }
 
 export const MessageSchema = SchemaFactory.createForClass(Message);

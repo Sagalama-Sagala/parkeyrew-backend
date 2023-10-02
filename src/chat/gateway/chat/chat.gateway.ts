@@ -82,16 +82,16 @@ export class ChatGateway {
     const message = await this.messageService.findMessageForRoom(room);
   }
 
-  @SubscribeMessage('addMessage')
-  async onAddMessage(socket: Socket, message: Message) {
-    const createdMessage = await this.messageService.create({
-      ...message,
-      user: socket.data.user,
-    });
-    const room = await this.roomService.getRoom(createdMessage.room);
-    const joinedUsers = await this.joinedRoomService.findByRoom(room);
-    for (const user of joinedUsers) {
-      this.server.to(user.socketId).emit('messageAdded', createdMessage);
-    }
-  }
+  // @SubscribeMessage('addMessage')
+  // async onAddMessage(socket: Socket, message: Message) {
+  //   const createdMessage = await this.messageService.create({
+  //     ...message,
+  //     user: socket.data.user,
+  //   });
+  //   const room = await this.roomService.getRoom(createdMessage.room._id);
+  //   const joinedUsers = await this.joinedRoomService.findByRoom(room);
+  //   for (const user of joinedUsers) {
+  //     this.server.to(user.socketId).emit('messageAdded', createdMessage);
+  //   }
+  // }
 }

@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import mongoose from 'mongoose';
 import { User } from 'src/user/schemas/user.schema';
+import { Tag } from './tag.schema';
 
 @Schema({
   timestamps: true,
@@ -58,6 +59,13 @@ export class Product {
   @ApiProperty()
   @Prop({ default: 0 })
   likeCount: number;
+
+  @ApiProperty()
+  @Prop({
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Tags' }],
+    default: [],
+  })
+  tags: Tag[];
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

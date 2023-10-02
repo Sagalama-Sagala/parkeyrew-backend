@@ -25,7 +25,7 @@ export class createProductDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  readonly brand: string; 
+  readonly brand: string;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -51,4 +51,7 @@ export class createProductDto {
   @IsNotEmpty()
   @IsPositive()
   readonly remain: number;
+
+  @ApiProperty()
+  readonly tags: string[];
 }

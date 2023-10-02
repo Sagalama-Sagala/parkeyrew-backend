@@ -25,6 +25,12 @@ import { JoinedRoomService } from './service/joined-room/joined-room.service';
     AuthModule,
     UserModule,
   ],
-  providers: [ChatGateway, RoomService, MessageService, ConnectedUserService, JoinedRoomService],
+  providers: [
+    ChatGateway,
+    RoomService,
+    MessageService,
+    ConnectedUserService,
+    JoinedRoomService,
+  ],
 })
 export class ChatModule {}

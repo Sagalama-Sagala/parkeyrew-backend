@@ -10,7 +10,6 @@ import {
 } from '@nestjs/common';
 import { Product } from './schemas/product.schema';
 import { UserService } from 'src/user/user.service';
-import { ProductService } from './product.service';
 // import { updateProductDto } from './dto/update-product.dto';
 import {
   ApiBadRequestResponse,
@@ -24,6 +23,7 @@ import {
 import { createProductDto } from './dto/create-product.dto';
 import { Response } from 'express';
 import { PaginationParameters } from './dto/pagination-params';
+import { ProductService } from './service/product/product.service';
 
 @ApiTags('Product')
 @Controller('product')
