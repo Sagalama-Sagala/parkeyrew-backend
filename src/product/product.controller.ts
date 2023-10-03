@@ -24,6 +24,9 @@ import { createProductDto } from './dto/create-product.dto';
 import { Response } from 'express';
 import { PaginationParameters } from './dto/pagination-params';
 import { ProductService } from './service/product/product.service';
+import { createProductCategoryDto } from './dto/create-product-category.dto';
+import { ProductCategoryService } from './service/product-category/product-category.service';
+import { ProductCategory } from './schemas/product-category.schema';
 
 @ApiTags('Product')
 @Controller('product')
@@ -31,6 +34,7 @@ export class ProductController {
   constructor(
     private readonly productService: ProductService,
     private readonly userService: UserService,
+    private readonly productCategoryService: ProductCategoryService,
   ) {}
 
   @ApiOkResponse({
@@ -140,5 +144,34 @@ export class ProductController {
     const newProduct = await this.productService.create(product, userId);
     newProduct.owner = userId;
     return newProduct;
+  }
+
+  // product category
+  @ApiCreatedResponse({
+    description: 'Created product category object as response',
+    type: createProductCategoryDto,
+  })
+  @ApiBadRequestResponse({
+    description: 'Product category cannot add. Try again',
+  })
+  @ApiSecurity('JWT-auth')
+  @Post('create-product-category')
+  async createProductCategory(
+    @Body() productCategory: createProductCategoryDto,
+  ) {
+    return this.productCategoryService.create(productCategory);
+  }
+
+  @ApiCreatedResponse({
+    description: 'Get product category object as response',
+    type: ProductCategory,
+  })
+  @ApiNotFoundResponse({
+    description: 'Product category not found. Try again',
+  })
+  @ApiSecurity('JWT-auth')
+  @Get('get-product-category')
+  async getALlProductCategory() {
+    return this.productCategoryService.findAll();
   }
 }

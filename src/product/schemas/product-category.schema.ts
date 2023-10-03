@@ -1,15 +1,17 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { ApiProperty } from '@nestjs/swagger';
 import { Product } from './product.schema';
 import mongoose from 'mongoose';
-import { ApiProperty } from '@nestjs/swagger';
 
 @Schema({
   timestamps: true,
 })
-export class Tag {
+export class ProductCategory {
+  _id: mongoose.Types.ObjectId;
+
   @ApiProperty()
-  @Prop()
-  tag: string;
+  @Prop({ required: true })
+  name: string;
 
   @ApiProperty()
   @Prop({
@@ -19,4 +21,5 @@ export class Tag {
   products: Product[];
 }
 
-export const TagSchema = SchemaFactory.createForClass(Tag);
+export const ProductCategorySchema =
+  SchemaFactory.createForClass(ProductCategory);
