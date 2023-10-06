@@ -2,7 +2,6 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import mongoose from 'mongoose';
 import { User } from 'src/user/schemas/user.schema';
-import { ProductCategory } from './product-category.schema';
 import { Max, Min } from 'class-validator';
 
 @Schema({
@@ -49,9 +48,9 @@ export class Product {
   @Prop({ required: true })
   size: string;
 
-  // @ApiProperty()
-  // @Prop({ required: true })
-  // category: string;
+  @ApiProperty()
+  @Prop({ required: true })
+  category: string;
 
   @ApiProperty()
   @Prop({ required: true })
@@ -68,13 +67,6 @@ export class Product {
   @ApiProperty()
   @Prop({ default: 0 })
   likeCount: number;
-
-  @ApiProperty()
-  @Prop({
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'ProductCategory',
-  })
-  category: ProductCategory;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

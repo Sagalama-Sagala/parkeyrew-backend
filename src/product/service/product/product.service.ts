@@ -6,7 +6,6 @@ import { Product } from 'src/product/schemas/product.schema';
 import { PaginationParameters } from 'src/product/dto/pagination-params';
 import { createProductDto } from 'src/product/dto/create-product.dto';
 import { updateUserDto } from 'src/user/dto/update-user.dto';
-import { ProductCategoryService } from '../product-category/product-category.service';
 
 @Injectable()
 export class ProductService {
@@ -14,11 +13,12 @@ export class ProductService {
     @InjectModel(Product.name)
     private ProductModel: mongoose.Model<Product>,
     private userService: UserService,
-    private productCategoryService: ProductCategoryService,
   ) {}
 
   async findAll(): Promise<Product[]> {
-    const product = await this.ProductModel.find().populate('owner');
+    const product = await this.ProductModel.find()
+      .populate('owner')
+      .populate('category');
     return product;
   }
 
@@ -60,18 +60,10 @@ export class ProductService {
   async create(product: createProductDto, userId: string): Promise<Product> {
     try {
       const user = await this.userService.findById(userId);
-      const category = await this.productCategoryService.findByName(
-        product.category,
-      );
       const newProduct = await this.ProductModel.create({
         ...product,
         owner: user,
-        category: category,
       });
-      await this.productCategoryService.addProductToProductCategory(
-        category,
-        newProduct,
-      );
       return newProduct;
     } catch (error) {
       throw new HttpException(
