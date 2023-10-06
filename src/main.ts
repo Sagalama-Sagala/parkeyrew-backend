@@ -22,13 +22,14 @@ async function bootstrap() {
       'JWT-auth',
     )
     .build();
-  // const document = SwaggerModule.createDocument(app, config);
-  // SwaggerModule.setup('api', app, document);
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
 
   app.enableCors({
     origin: [
       'http://localhost:3000',
       'http://localhost:5173',
+      'http://localhost:4173',
       'https://parkeyrew-frontend.chompukyrc.com',
       'https://parkeyrew-backend.chompukyrc.com',
     ],

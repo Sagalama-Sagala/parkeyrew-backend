@@ -2,11 +2,14 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import mongoose from 'mongoose';
 import { User } from 'src/user/schemas/user.schema';
+import { Max, Min } from 'class-validator';
 
 @Schema({
   timestamps: true,
 })
 export class Product {
+  _id: mongoose.Types.ObjectId;
+
   @ApiProperty()
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   owner: User;
@@ -22,6 +25,12 @@ export class Product {
   @ApiProperty()
   @Prop({ required: true })
   deliveryFee: number;
+
+  @ApiProperty()
+  @Prop({ required: true })
+  @Min(50)
+  @Max(100)
+  condition: number;
 
   @ApiProperty()
   @Prop({ required: true })

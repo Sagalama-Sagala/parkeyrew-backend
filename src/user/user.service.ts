@@ -1,10 +1,4 @@
-import {
-  HttpException,
-  HttpStatus,
-  Inject,
-  Injectable,
-  forwardRef,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schemas/user.schema';
 import { ProductService } from '../product/product.service';
@@ -13,6 +7,7 @@ import { createUserDto } from './dto/create-user.dto';
 import { updateUserDto } from './dto/update-user.dto';
 import { getUserPageById } from './dto/get-user-page-by-id.dto';
 import * as bcrypt from 'bcrypt';
+import { Room } from 'src/chat/schemas/room.schema';
 
 @Injectable()
 export class UserService {
@@ -105,5 +100,13 @@ export class UserService {
     } catch (error) {
       throw new HttpException('User not found.', HttpStatus.NOT_FOUND);
     }
+  }
+
+  // for chat service
+  async addRoomToUser(user: User, room: Room): Promise<User> {
+    const newUser = await this.UserModel.findByIdAndUpdate(user._id, {
+      $push: { chatRooms: room._id },
+    });
+    return newUser;
   }
 }
