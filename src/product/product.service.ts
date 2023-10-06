@@ -1,7 +1,6 @@
 import { InjectModel } from '@nestjs/mongoose';
-import { forwardRef } from '@nestjs/common';
 import mongoose from 'mongoose';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Inject, forwardRef } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 import { Product } from 'src/product/schemas/product.schema';
 import { PaginationParameters } from 'src/product/dto/pagination-params';

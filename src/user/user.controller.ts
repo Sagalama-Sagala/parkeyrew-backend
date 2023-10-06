@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './schemas/user.schema';
 import { createUserDto } from './dto/create-user.dto';
@@ -10,7 +10,6 @@ import {
   ApiSecurity,
   ApiTags,
 } from '@nestjs/swagger';
-import { Response } from 'express';
 
 @ApiTags('User')
 @Controller('user')
@@ -36,38 +35,11 @@ export class UserController {
     description: 'User not found',
   })
   @ApiSecurity('JWT-auth')
-  @Get('get-user-by-id')
+  @Get('get-user-page-by-id')
   async getUserById(
     @Req() req: any,
-    @Res() res: Response
   ){
-    try{
-      const userId = req.userId;
-      const user = await this.userService.findById(userId);
-      if (!user) {
-        res.status(404).json({
-          message: 'User not found',
-          data: userId,
-        });
-      }
-      const products = await this.productService.findAllByOwnerId(userId);
-      res.status(200).json({
-        message: 'Get user by id was successful',
-        data: {
-          username: user.username,
-          reviewStar: user.reviewStar,
-          followerCount: user.followerList.length,
-          followingCount: user.followingList.length,
-          description: user.description,
-          products: products,
-        },
-      });
-    } catch (err) {
-      res.status(500).json({
-        message: 'Error to get user by id',
-        data: err.message,
-      });
-    }
+    return await this.userService.findUserPageById(req.userId);
   }
 
   @ApiOkResponse({
@@ -78,38 +50,11 @@ export class UserController {
     description: 'User not found',
   })
   @ApiSecurity('JWT-auth')
-  @Get('get-shop-by-id/:id')
+  @Get('get-shop-page-by-id/:id')
   async getShopById(
-    @Param('id') id: string,
-    @Res() res: Response
+    @Param('id') id: string
   ){
-    try{
-      const userId = id;
-      const user = await this.userService.findById(userId);
-      if (!user) {
-        res.status(404).json({
-          message: 'User not found',
-          data: userId,
-        });
-      }
-      const products = await this.productService.findAllByOwnerId(userId);
-      res.status(200).json({
-        message: 'Get shop by id was successful',
-        data: {
-          username: user.username,
-          reviewStar: user.reviewStar,
-          followerCount: user.followerList.length,
-          followingCount: user.followingList.length,
-          description: user.description,
-          products: products,
-        },
-      });
-    } catch (err) {
-      res.status(500).json({
-        message: 'Error to get shop by id',
-        data: err.message,
-      });
-    }
+    return await this.userService.findUserPageById(id);
   }
 
   @ApiCreatedResponse({

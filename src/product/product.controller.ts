@@ -23,7 +23,7 @@ import {
 import { createProductDto } from './dto/create-product.dto';
 import { Response } from 'express';
 import { PaginationParameters } from './dto/pagination-params';
-import { ProductService } from './service/product/product.service';
+import { ProductService } from './product.service';
 
 @ApiTags('Product')
 @Controller('product')
