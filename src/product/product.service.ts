@@ -1,4 +1,5 @@
 import { InjectModel } from '@nestjs/mongoose';
+import { forwardRef } from '@nestjs/common';
 import mongoose from 'mongoose';
 import { Product } from './schemas/product.schema';
 import { HttpException, HttpStatus, Inject, Injectable} from '@nestjs/common';
@@ -11,6 +12,7 @@ export class ProductService {
   constructor(
     @InjectModel(Product.name)
     private ProductModel: mongoose.Model<Product>,
+    @Inject(forwardRef(() => UserService))
     private userService: UserService,
   ) {}
 

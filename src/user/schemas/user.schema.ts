@@ -8,9 +8,7 @@ import { Product } from 'src/product/schemas/product.schema';
   timestamps: true,
 })
 export class User {
-  @ApiProperty()
-  @Prop({ type: mongoose.Schema.Types.ObjectId })
-  _id: mongoose.Types.ObjectId;
+  _id: string;
 
   @ApiProperty()
   @Prop({ required: true })
