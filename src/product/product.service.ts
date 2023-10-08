@@ -6,6 +6,7 @@ import { Product } from 'src/product/schemas/product.schema';
 import { PaginationParameters } from 'src/product/dto/pagination-params';
 import { createProductDto } from 'src/product/dto/create-product.dto';
 import { updateUserDto } from 'src/user/dto/update-user.dto';
+import { getInfoProductPageDto } from './dto/get-info-product-page.dto';
 
 @Injectable()
 export class ProductService {
@@ -50,12 +51,37 @@ export class ProductService {
     return products;
   }
 
-  async findTop4ProductsOfUser(userId: string, productId: string) {
-    const products = await this.ProductModel.find({
-      owner: userId,
-      _id: { $ne: productId },
-    });
-    return products;
+  async findById(id: string): Promise<Product> {
+    const user = await this.ProductModel.findById(id);
+    return user;
+  }
+
+  async findInfoProductPage(productId: string): Promise<any>{
+    try{
+      const product = await this.ProductModel.findById(productId);
+      const newProduct = await this.ProductModel.findOneAndUpdate(
+        { _id: productId },
+        { $set: { viewCount: product.viewCount+1 } },
+        { new: true, runValidators: true },
+      );
+      const userId = product.owner.toString();
+      const user = await this.userService.findById(userId);
+      const productsOfUser = await this.ProductModel.find({
+        owner: userId,
+        _id: { $ne: productId },
+      });;
+      productsOfUser.sort((a,b) => b.viewCount-a.viewCount);
+      const topProductsOfUser=productsOfUser.slice(0,4);
+      const result = new getInfoProductPageDto();
+      result.product = newProduct;
+      result.username = user.username;
+      result.reviewStar = user.reviewStar;
+      result.productsOfUser = topProductsOfUser;
+      return result;
+    }
+    catch(err){
+      throw new HttpException('Error to get info product page: '+err.message,HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   async create(product: createProductDto, userId: string): Promise<Product> {
@@ -72,11 +98,6 @@ export class ProductService {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
-  }
-
-  async findById(id: string): Promise<Product> {
-    const user = await this.ProductModel.findById(id);
-    return user;
   }
 
   async updateById(id: string, product: updateUserDto): Promise<Product> {
