@@ -14,6 +14,7 @@ import { Room } from 'src/chat/schemas/room.schema';
 import { RoomService } from 'src/chat/service/room-service/room.service';
 import { Message } from 'src/chat/schemas/message.schema';
 import { MessageService } from 'src/chat/service/message/message.service';
+import { JoinedRoomService } from 'src/chat/service/joined-room/joined-room.service';
 
 @WebSocketGateway({
   cors: {
@@ -33,6 +34,7 @@ export class ChatGateway {
     private userService: UserService,
     private roomService: RoomService,
     private messageService: MessageService,
+    private joinedRoomService: JoinedRoomService,
   ) {}
 
   @SubscribeMessage('message')
@@ -51,10 +53,7 @@ export class ChatGateway {
         return this.disconnect(socket);
       } else {
         socket.data.user = user;
-        console.log(socket.data);
-        const rooms = await this.roomService.getRoomsForUser(
-          user._id.toString(),
-        );
+        const rooms = await this.roomService.getRoomsForUser(user);
         return this.server.to(socket.id).emit('rooms', rooms);
       }
     } catch {
@@ -83,11 +82,16 @@ export class ChatGateway {
     const message = await this.messageService.findMessageForRoom(room);
   }
 
-  @SubscribeMessage('addMessage')
-  async onAddMessage(socket: Socket, message: Message) {
-    const createdMessage = await this.messageService.create({
-      ...message,
-      user: socket.data.user,
-    });
-  }
+  // @SubscribeMessage('addMessage')
+  // async onAddMessage(socket: Socket, message: Message) {
+  //   const createdMessage = await this.messageService.create({
+  //     ...message,
+  //     user: socket.data.user,
+  //   });
+  //   const room = await this.roomService.getRoom(createdMessage.room._id);
+  //   const joinedUsers = await this.joinedRoomService.findByRoom(room);
+  //   for (const user of joinedUsers) {
+  //     this.server.to(user.socketId).emit('messageAdded', createdMessage);
+  //   }
+  // }
 }
