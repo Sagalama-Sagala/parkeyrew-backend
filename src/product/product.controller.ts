@@ -1,15 +1,5 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Post,
-  Req,
-  Query,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req, Query } from '@nestjs/common';
 import { Product } from './schemas/product.schema';
-import { UserService } from 'src/user/user.service';
-// import { updateProductDto } from './dto/update-product.dto';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
@@ -77,13 +67,11 @@ export class ProductController {
     description: 'Get info product page successfully',
   })
   @ApiNotFoundResponse({
-    description: 'Product not found'
+    description: 'Product not found',
   })
   @ApiSecurity('JWT-auth')
   @Get('get-info-product-page/:id')
-  async getInfoProductPage(
-    @Param('id') id: string
-  ){
+  async getInfoProductPage(@Param('id') id: string) {
     return await this.productService.findInfoProductPage(id);
   }
 

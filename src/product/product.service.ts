@@ -1,6 +1,12 @@
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
-import { HttpException, HttpStatus, Injectable, Inject, forwardRef } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  Inject,
+  forwardRef,
+} from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 import { Product } from 'src/product/schemas/product.schema';
 import { PaginationParameters } from 'src/product/dto/pagination-params';
@@ -18,9 +24,7 @@ export class ProductService {
   ) {}
 
   async findAll(): Promise<Product[]> {
-    const product = await this.ProductModel.find()
-      .populate('owner')
-      .populate('category');
+    const product = await this.ProductModel.find().populate('owner');
     return product;
   }
 
@@ -56,31 +60,32 @@ export class ProductService {
     return user;
   }
 
-  async findInfoProductPage(productId: string): Promise<any>{
-    try{
+  async findInfoProductPage(productId: string): Promise<any> {
+    try {
       const product = await this.ProductModel.findById(productId);
       const newProduct = await this.ProductModel.findOneAndUpdate(
         { _id: productId },
-        { $set: { viewCount: product.viewCount+1 } },
+        { $set: { viewCount: product.viewCount + 1 } },
         { new: true, runValidators: true },
-      );
+      ).populate('owner');
       const userId = product.owner.toString();
       const user = await this.userService.findById(userId);
       const productsOfUser = await this.ProductModel.find({
-        owner: userId,
         _id: { $ne: productId },
-      });;
-      productsOfUser.sort((a,b) => b.viewCount-a.viewCount);
-      const topProductsOfUser=productsOfUser.slice(0,4);
+      }).populate('owner');
+      productsOfUser.sort((a, b) => b.viewCount - a.viewCount);
+      const topProductsOfUser = productsOfUser.slice(0, 4);
       const result = new getInfoProductPageDto();
       result.product = newProduct;
       result.username = user.username;
       result.reviewStar = user.reviewStar;
       result.productsOfUser = topProductsOfUser;
       return result;
-    }
-    catch(err){
-      throw new HttpException('Error to get info product page: '+err.message,HttpStatus.INTERNAL_SERVER_ERROR);
+    } catch (err) {
+      throw new HttpException(
+        'Error to get info product page: ' + err.message,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
