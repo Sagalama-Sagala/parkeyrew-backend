@@ -44,6 +44,7 @@ export class ChatGateway {
 
   async handleConnection(socket: Socket) {
     try {
+      console.log('... on connect');
       const decodedToken = await this.authService.verifyJwt(
         socket.handshake.headers.authorization,
       );

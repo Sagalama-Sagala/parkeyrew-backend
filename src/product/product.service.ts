@@ -31,11 +31,12 @@ export class ProductService {
     return await this.ProductModel.find().sort({ createdAt: -1 }).limit(4);
   }
 
-  async findByFilter(
-  ): Promise<Product[] | undefined> {
-    const products = await this.ProductModel.find(
+  async findByFilter(): Promise<Product[] | undefined> {
+    const products = await this.ProductModel
+      .find
       //filter
-    ).sort({ createdAt: -1 });
+      ()
+      .sort({ createdAt: -1 });
     return products;
   }
 
@@ -51,19 +52,22 @@ export class ProductService {
 
   async findInfoProductPage(productId: string): Promise<any> {
     try {
-      const product = await this.ProductModel.findById(productId).populate("owner");
+      const product = await this.ProductModel.findById(productId);
       const newProduct = await this.ProductModel.findOneAndUpdate(
         { _id: productId },
         { $set: { viewCount: product.viewCount + 1 } },
         { new: true, runValidators: true },
-      )
+      ).populate({ path: 'owner', select: 'username reviewStar' });
       const productsOfUser = await this.ProductModel.find({
         _id: { $ne: productId },
-      }).sort( { createAt: -1}).limit(4);
+      })
+        .populate({ path: 'owner', select: 'username reviewStar' })
+        .sort({ createAt: -1 })
+        .limit(4);
       const result = new getInfoProductPageDto();
       result.product = newProduct;
-      result.username = product.owner.username;
-      result.reviewStar = product.owner.reviewStar;
+      // result.username = product.owner.username;
+      // result.reviewStar = product.owner.reviewStar;
       result.productsOfUser = productsOfUser;
       return result;
     } catch (err) {
