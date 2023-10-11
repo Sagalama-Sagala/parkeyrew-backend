@@ -3,7 +3,6 @@ import mongoose from 'mongoose';
 import { HttpException, HttpStatus, Injectable, Inject, forwardRef } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 import { Product } from 'src/product/schemas/product.schema';
-import { PaginationParameters } from 'src/product/dto/pagination-params';
 import { createProductDto } from 'src/product/dto/create-product.dto';
 import { updateUserDto } from 'src/user/dto/update-user.dto';
 import { getInfoProductPageDto } from './dto/get-info-product-page.dto';
@@ -24,25 +23,15 @@ export class ProductService {
     return product;
   }
 
-  async findLatest(): Promise<Product[] | undefined> {
-    const products = await this.ProductModel.find().sort({ _id: -1 }).limit(4);
-    return products;
+  async find4Latest(): Promise<Product[]> {
+    return await this.ProductModel.find().sort({ createdAt: -1 }).limit(4);
   }
 
-  async findByPagination(
-    paginationParams: PaginationParameters,
+  async findByFilter(
   ): Promise<Product[] | undefined> {
     const products = await this.ProductModel.find(
-      {},
-      {},
-      {
-        lean: true,
-        sort: {
-          createdAt: -1,
-        },
-        ...paginationParams,
-      },
-    );
+      //filter
+    ).sort({ createdAt: -1 });
     return products;
   }
 
@@ -69,14 +58,14 @@ export class ProductService {
       const productsOfUser = await this.ProductModel.find({
         owner: userId,
         _id: { $ne: productId },
-      });;
-      productsOfUser.sort((a,b) => b.viewCount-a.viewCount);
-      const topProductsOfUser=productsOfUser.slice(0,4);
+      })
+      .sort({ viewCount: -1})
+      .limit(4);
       const result = new getInfoProductPageDto();
       result.product = newProduct;
       result.username = user.username;
       result.reviewStar = user.reviewStar;
-      result.productsOfUser = topProductsOfUser;
+      result.productsOfUser = productsOfUser;
       return result;
     }
     catch(err){
