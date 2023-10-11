@@ -22,7 +22,7 @@ COPY --from=builder /home/node/package*.json /home/node/
 COPY --from=builder /home/node/yarn.lock /home/node/
 COPY --from=builder /home/node/dist/ /home/node/dist/
 COPY --from=builder /home/node/node_modules/ /home/node/node_modules/
-
+ 
 
 CMD ["node", "dist/main.js"]
 
