@@ -6,11 +6,5 @@ export class getInfoProductPageDto {
   product: Product;
 
   @ApiProperty()
-  username: string;
-
-  @ApiProperty()
-  reviewStar: number;
-
-  @ApiProperty()
   productsOfUser: Product[];
 }

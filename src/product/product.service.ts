@@ -66,8 +66,6 @@ export class ProductService {
         .limit(4);
       const result = new getInfoProductPageDto();
       result.product = newProduct;
-      // result.username = product.owner.username;
-      // result.reviewStar = product.owner.reviewStar;
       result.productsOfUser = productsOfUser;
       return result;
     } catch (err) {
