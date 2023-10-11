@@ -59,7 +59,6 @@ export class ChatGateway {
     } catch {
       return this.disconnect(socket);
     }
-    console.log('On connect');
   }
 
   handleDisconnection(socket: Socket) {

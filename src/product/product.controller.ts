@@ -5,6 +5,7 @@ import {
   Param,
   Post,
   Req,
+  Query,
 } from '@nestjs/common';
 import { Product } from './schemas/product.schema';
 import {
@@ -60,13 +61,11 @@ export class ProductController {
     description: 'Get info product page successfully',
   })
   @ApiNotFoundResponse({
-    description: 'Product not found'
+    description: 'Product not found',
   })
   @ApiSecurity('JWT-auth')
   @Get('get-info-product-page/:id')
-  async getInfoProductPage(
-    @Param('id') id: string
-  ){
+  async getInfoProductPage(@Param('id') id: string){
     return await this.productService.findInfoProductPage(id);
   }
 
