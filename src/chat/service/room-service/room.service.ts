@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
+import { getRoomDto } from 'src/chat/dto/get-room.dto';
 import { Room } from 'src/chat/schemas/room.schema';
+import { Product } from 'src/product/schemas/product.schema';
 import { User } from 'src/user/schemas/user.schema';
 
 @Injectable()
@@ -17,16 +19,82 @@ export class RoomService {
     return createdRoom;
   }
 
-  async getRoom(roomId: string): Promise<Room> {
-    return this.RoomModel.findById(roomId);
+  async findByProduct(product: Product): Promise<Room> {
+    const room = await this.RoomModel.findOne({ product: product });
+    return room;
   }
 
-  async getRoomsForUser(user: User): Promise<Room[]> {
+  async getRoom(roomId: string, user: User): Promise<any> {
+    const room = await this.RoomModel.findById(roomId)
+      .populate({
+        path: 'seller',
+        select: 'username',
+      })
+      .populate({ path: 'customer', select: 'username' })
+      .populate({ path: 'product', select: 'name price' });
+    const newRoom = new getRoomDto();
+    if (user._id.toString() === room.customer._id.toString()) {
+      newRoom.user = {
+        role: 'customer',
+        user: room.customer,
+      };
+      newRoom.otherUser = {
+        role: 'seller',
+        user: room.seller,
+      };
+    } else {
+      newRoom.user = {
+        role: 'seller',
+        user: room.seller,
+      };
+      newRoom.otherUser = {
+        role: 'customer',
+        user: room.customer,
+      };
+    }
+    newRoom.product = room.product;
+    newRoom.messages = room.messages;
+    return newRoom;
+  }
+
+  async getRoomsForUser(user: User): Promise<getRoomDto[]> {
     const rooms = await this.RoomModel.find({
       $or: [{ seller: user }, { customer: user }],
     })
-      .populate('seller')
-      .populate('customer');
-    return rooms;
+      .populate({
+        path: 'seller',
+        select: 'username',
+      })
+      .populate({ path: 'customer', select: 'username' })
+      .populate({ path: 'product', select: 'name price' });
+    const newRooms: getRoomDto[] = [];
+    for (const room of rooms) {
+      const newRoom = new getRoomDto();
+      if (user._id.toString() === room.customer._id.toString()) {
+        newRoom.user = {
+          role: 'customer',
+          user: room.customer,
+        };
+        newRoom.otherUser = {
+          role: 'seller',
+          user: room.seller,
+        };
+      } else {
+        newRoom.user = {
+          role: 'seller',
+          user: room.seller,
+        };
+        newRoom.otherUser = {
+          role: 'customer',
+          user: room.customer,
+        };
+      }
+      newRoom.product = room.product;
+      newRoom.messages = room.messages;
+      newRoom.id = room._id.toString();
+      newRooms.push(newRoom);
+    }
+
+    return newRooms;
   }
 }

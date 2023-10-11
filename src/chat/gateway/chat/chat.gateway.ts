@@ -12,7 +12,7 @@ import { UnauthorizedException } from '@nestjs/common';
 // import { Room } from 'src/chat/schemas/room.schema';
 import { Room } from 'src/chat/schemas/room.schema';
 import { RoomService } from 'src/chat/service/room-service/room.service';
-import { Message } from 'src/chat/schemas/message.schema';
+// import { Message } from 'src/chat/schemas/message.schema';
 import { MessageService } from 'src/chat/service/message/message.service';
 import { JoinedRoomService } from 'src/chat/service/joined-room/joined-room.service';
 
@@ -49,6 +49,7 @@ export class ChatGateway {
         socket.handshake.headers.authorization,
       );
       const user: User = await this.userService.findById(decodedToken.id);
+      console.log(user.username);
 
       if (!user) {
         return this.disconnect(socket);
@@ -72,26 +73,65 @@ export class ChatGateway {
   }
 
   @SubscribeMessage('createRoom')
-  async onCreateRoom(socket: Socket, room: Room): Promise<Room> {
-    const createRoom = this.roomService.createRoom(room, socket.data.user);
+  async onCreateRoom(socket: Socket, room: Room) {
+    const createRoom = await this.roomService.createRoom(
+      room,
+      socket.data.user,
+    );
     return createRoom;
+  }
+
+  @SubscribeMessage('connectRoom')
+  async onConnectRoom(socket: Socket, room: Room) {
+    console.log('hello');
+    const alreadyRoom = await this.roomService.findByProduct(room.product);
+    if (!alreadyRoom) {
+      const newRoom = await this.roomService.createRoom(room, socket.data.user);
+      return this.server.to(socket.id).emit('room', newRoom._id);
+    }
+    return this.server.to(socket.id).emit('room', alreadyRoom._id);
   }
 
   @SubscribeMessage('joinRoom')
   async onJoinRoom(socket: Socket, room: Room) {
-    const message = await this.messageService.findMessageForRoom(room);
+    const messages = await this.messageService.findMessageForRoom(room);
+    await this.joinedRoomService.create({
+      socketId: socket.id,
+      user: socket.data.user,
+      room,
+    });
+    this.server.to(socket.id).emit('messages', messages);
   }
 
-  // @SubscribeMessage('addMessage')
-  // async onAddMessage(socket: Socket, message: Message) {
-  //   const createdMessage = await this.messageService.create({
-  //     ...message,
-  //     user: socket.data.user,
-  //   });
-  //   const room = await this.roomService.getRoom(createdMessage.room._id);
-  //   const joinedUsers = await this.joinedRoomService.findByRoom(room);
-  //   for (const user of joinedUsers) {
-  //     this.server.to(user.socketId).emit('messageAdded', createdMessage);
+  @SubscribeMessage('getRoom')
+  async onGetRoom(socket: Socket, roomId: string) {
+    const room = await this.roomService.getRoom(roomId, socket.data.user);
+    this.server.to(socket.id).emit('room', room);
+  }
+
+  @SubscribeMessage('getRooms')
+  async onGetRooms(socket: Socket) {
+    const rooms = await this.roomService.getRoomsForUser(socket.data.user);
+    this.server.to(socket.id).emit('rooms', rooms);
+  }
+
+  @SubscribeMessage('leaveRoom')
+  async onLeaveRoom(socket: Socket) {
+    await this.joinedRoomService.deleteBySocketId(socket.id);
+  }
+
+  //   @SubscribeMessage('addMessage')
+  //   async onAddMessage(socket: Socket, message: Message) {
+  //     const createdMessage = await this.messageService.create({
+  //       ...message,
+  //       user: socket.data.user,
+  //     });
+  //     const room = await this.roomService.getRoom(
+  //       createdMessage.room._id.toString(),
+  //     );
+  //     const joinedUser = await this.joinedRoomService.findByRoom(room);
+  //     for (const user of joinedUser) {
+  //       this.server.to(user.socketId).emit('messageAdded', createdMessage);
+  //     }
   //   }
-  // }
 }
