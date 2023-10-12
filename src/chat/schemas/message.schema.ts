@@ -21,6 +21,8 @@ export class Message {
     ref: 'Room',
   })
   room: Room;
+
+  createdAt: Date;
 }
 
 export const MessageSchema = SchemaFactory.createForClass(Message);

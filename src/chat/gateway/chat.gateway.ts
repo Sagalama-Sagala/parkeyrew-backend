@@ -12,6 +12,8 @@ import { Room } from 'src/chat/schemas/room.schema';
 import { RoomService } from 'src/chat/service/room-service/room.service';
 import { MessageService } from 'src/chat/service/message/message.service';
 import { JoinedRoomService } from 'src/chat/service/joined-room/joined-room.service';
+import { ConnectedUserService } from '../service/connected-user/connected-user.service';
+import { getMessageDto } from '../dto/get-message.dto';
 
 @WebSocketGateway({
   cors: {
@@ -32,7 +34,13 @@ export class ChatGateway {
     private roomService: RoomService,
     private messageService: MessageService,
     private joinedRoomService: JoinedRoomService,
+    private connectedUserService: ConnectedUserService,
   ) {}
+
+  async onModuleInit() {
+    await this.connectedUserService.deleteAll();
+    await this.joinedRoomService.deleteAll();
+  }
 
   async handleConnection(socket: Socket) {
     try {
@@ -48,6 +56,7 @@ export class ChatGateway {
       } else {
         socket.data.user = user;
         const rooms = await this.roomService.getRoomsForUser(user);
+        await this.connectedUserService.create({ socketId: socket.id, user });
         return this.server.to(socket.id).emit('rooms', rooms);
       }
     } catch {
@@ -55,7 +64,8 @@ export class ChatGateway {
     }
   }
 
-  handleDisconnection(socket: Socket) {
+  async handleDisconnection(socket: Socket) {
+    await this.connectedUserService.deleteBySocketId(socket.id);
     socket.disconnect();
   }
 
@@ -86,7 +96,21 @@ export class ChatGateway {
   @SubscribeMessage('joinRoom')
   async onJoinRoom(socket: Socket, roomId: string) {
     const messages = await this.messageService.findMessageForRoom(roomId);
-    this.server.to(socket.id).emit('messages', messages);
+    const room = await this.roomService.findById(roomId);
+    await this.joinedRoomService.create({
+      socketId: socket.id,
+      user: socket.data.user,
+      room: room,
+    });
+    const newMessage: getMessageDto[] = messages.map((message) => ({
+      text: message.text,
+      createdAt: message.createdAt,
+      isMyMessage:
+        socket.data.user._id.toString() === message.user._id.toString()
+          ? true
+          : false,
+    }));
+    this.server.to(socket.id).emit('messages', newMessage);
   }
 
   @SubscribeMessage('getRoom')
@@ -116,8 +140,18 @@ export class ChatGateway {
       user: socket.data.user,
       room: room,
     });
-    console.log(socket.data.user.username + ': ' + createMessage.text);
-
-    this.server.to(socket.id).emit('message', createMessage);
+    console.log(createMessage);
+    const joinedUsers = await this.joinedRoomService.findByRoom(room);
+    for (const user of joinedUsers) {
+      const newMessage: getMessageDto = {
+        text: createMessage.text,
+        createdAt: createMessage.createdAt,
+        isMyMessage:
+          socket.data.user._id.toString() === user.user._id.toString()
+            ? true
+            : false,
+      };
+      this.server.to(user.socketId).emit('message', newMessage);
+    }
   }
 }

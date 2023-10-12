@@ -20,7 +20,7 @@ export class ConnectedUserService {
   }
 
   async deleteBySocketId(socketId: string) {
-    return this.ConnectedUserModel.deleteMany({ socketId: socketId });
+    return this.ConnectedUserModel.deleteOne({ socketId: socketId });
   }
 
   async deleteAll() {
