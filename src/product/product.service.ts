@@ -62,7 +62,7 @@ export class ProductService {
         _id: { $ne: productId },
       })
         .populate({ path: 'owner', select: 'username reviewStar' })
-        .sort({ createAt: -1 })
+        .sort({ createdAt: -1 })
         .limit(4);
       const result = new getInfoProductPageDto();
       result.product = newProduct;

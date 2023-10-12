@@ -13,14 +13,14 @@ export class ReviewService{
         private readonly userService: UserService,
     ){}
 
-    // async findAllByShopId(shopId: string): Promise<Review[]>{
-    //     try{
-    //         return await this.ReviewModel.find({shopId: shopId});//.sort({ createAt: -1 })
-    //     }
-    //     catch(err){
-    //         throw new HttpException('Error while get all reviews: '+err.message,HttpStatus.INTERNAL_SERVER_ERROR);
-    //     }
-    // }
+    async findAllByShopId(shopId: string): Promise<Review[]>{
+        try{
+            return await this.ReviewModel.find({shop: shopId}).sort({ createdAt: -1 });
+        }
+        catch(err){
+            throw new HttpException('Error while get all reviews: '+err.message,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     async create(userId: string, review: createReviewDto): Promise<Review>{
         try{
