@@ -94,6 +94,25 @@ export class UserService {
     }
   }
 
+  async updateReviewStar(userId: string, star: number): Promise<User>{
+    try{
+      const user = await this.UserModel.findById(userId);
+      if(!user){
+        throw new HttpException('User not found: ' + userId,404);
+      }
+      const newStar = (user.reviewStar === -1) ? star : ((user.reviewStar * user.reviewCount) + star)/(user.reviewCount+1);
+      return await this.UserModel.findOneAndUpdate(
+        { _id: userId },
+        { $set: 
+          { reviewStar: newStar, reviewCount: user.reviewCount+1 }
+        },
+        { new: true, runValidators: true },
+      );
+    }catch(err){
+      throw new HttpException('Error to update review star: '+err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
   async deleteById(id: string): Promise<User> {
     try {
       return await this.UserModel.findByIdAndDelete(id);

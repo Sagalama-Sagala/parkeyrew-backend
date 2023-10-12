@@ -11,11 +11,11 @@ export class Review {
 
     @ApiProperty()
     @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
-    shopId: User;
+    shop: User;
 
     @ApiProperty()
     @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
-    customerId: User;
+    customer: User;
 
     @ApiProperty()
     @Prop({ default: 0 })
