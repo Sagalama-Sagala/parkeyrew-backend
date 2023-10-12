@@ -35,8 +35,12 @@ export class User {
   description: string;
 
   @ApiProperty()
-  @Prop({ default: 0 })
+  @Prop({ default: -1 })
   reviewStar: number;
+
+  @ApiProperty()
+  @Prop({ default: 0 })
+  reviewCount: number;
 
   @ApiProperty()
   @Prop({

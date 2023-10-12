@@ -10,8 +10,8 @@ import {
 import { UserService } from 'src/user/user.service';
 import { Product } from 'src/product/schemas/product.schema';
 import { createProductDto } from 'src/product/dto/create-product.dto';
-import { updateUserDto } from 'src/user/dto/update-user.dto';
 import { getInfoProductPageDto } from './dto/get-info-product-page.dto';
+import { updateProductDto } from './dto/update-product.dto';
 
 @Injectable()
 export class ProductService {
@@ -62,7 +62,7 @@ export class ProductService {
         _id: { $ne: productId },
       })
         .populate({ path: 'owner', select: 'username reviewStar' })
-        .sort({ createAt: -1 })
+        .sort({ createdAt: -1 })
         .limit(4);
       const result = new getInfoProductPageDto();
       result.product = newProduct;
@@ -92,12 +92,17 @@ export class ProductService {
     }
   }
 
-  async updateById(id: string, product: updateUserDto): Promise<Product> {
+  async update(ownerId: string, product: updateProductDto): Promise<Product> {
     try {
-      return await this.ProductModel.findOneAndUpdate({ _id: id }, product, {
-        new: true,
-        runValidators: true,
-      });
+      const newProduct = await this.ProductModel.findOneAndUpdate(
+        { _id: product.productId, owner: ownerId },
+        { $set: product }, 
+        { new: true, runValidators: true }
+      );
+      if(!newProduct){
+        throw new HttpException('Product not found.', HttpStatus.NOT_FOUND);
+      }
+      return newProduct;
     } catch (error) {
       throw new HttpException('Product not found.', HttpStatus.NOT_FOUND);
     }
