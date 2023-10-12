@@ -1,5 +1,4 @@
 import {
-  MessageBody,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
@@ -9,10 +8,8 @@ import { Server, Socket } from 'socket.io';
 import { User } from 'src/user/schemas/user.schema';
 import { UserService } from 'src/user/user.service';
 import { UnauthorizedException } from '@nestjs/common';
-// import { Room } from 'src/chat/schemas/room.schema';
 import { Room } from 'src/chat/schemas/room.schema';
 import { RoomService } from 'src/chat/service/room-service/room.service';
-// import { Message } from 'src/chat/schemas/message.schema';
 import { MessageService } from 'src/chat/service/message/message.service';
 import { JoinedRoomService } from 'src/chat/service/joined-room/joined-room.service';
 
@@ -36,11 +33,6 @@ export class ChatGateway {
     private messageService: MessageService,
     private joinedRoomService: JoinedRoomService,
   ) {}
-
-  @SubscribeMessage('message')
-  handleChat(@MessageBody() message: string) {
-    this.server.emit('message', message);
-  }
 
   async handleConnection(socket: Socket) {
     try {
@@ -83,23 +75,17 @@ export class ChatGateway {
 
   @SubscribeMessage('connectRoom')
   async onConnectRoom(socket: Socket, room: Room) {
-    console.log('hello');
     const alreadyRoom = await this.roomService.findByProduct(room.product);
     if (!alreadyRoom) {
       const newRoom = await this.roomService.createRoom(room, socket.data.user);
-      return this.server.to(socket.id).emit('room', newRoom._id);
+      return this.server.to(socket.id).emit('roomId', newRoom._id);
     }
-    return this.server.to(socket.id).emit('room', alreadyRoom._id);
+    return this.server.to(socket.id).emit('roomId', alreadyRoom._id);
   }
 
   @SubscribeMessage('joinRoom')
-  async onJoinRoom(socket: Socket, room: Room) {
-    const messages = await this.messageService.findMessageForRoom(room);
-    await this.joinedRoomService.create({
-      socketId: socket.id,
-      user: socket.data.user,
-      room,
-    });
+  async onJoinRoom(socket: Socket, roomId: string) {
+    const messages = await this.messageService.findMessageForRoom(roomId);
     this.server.to(socket.id).emit('messages', messages);
   }
 
@@ -120,18 +106,18 @@ export class ChatGateway {
     await this.joinedRoomService.deleteBySocketId(socket.id);
   }
 
-  //   @SubscribeMessage('addMessage')
-  //   async onAddMessage(socket: Socket, message: Message) {
-  //     const createdMessage = await this.messageService.create({
-  //       ...message,
-  //       user: socket.data.user,
-  //     });
-  //     const room = await this.roomService.getRoom(
-  //       createdMessage.room._id.toString(),
-  //     );
-  //     const joinedUser = await this.joinedRoomService.findByRoom(room);
-  //     for (const user of joinedUser) {
-  //       this.server.to(user.socketId).emit('messageAdded', createdMessage);
-  //     }
-  //   }
+  @SubscribeMessage('addMessage')
+  async onAddMessage(socket: Socket, message: any) {
+    const roomId = message.roomId;
+    const newMessage = message.message;
+    const room: Room = await this.roomService.findById(roomId);
+    const createMessage = await this.messageService.create({
+      ...newMessage,
+      user: socket.data.user,
+      room: room,
+    });
+    console.log(socket.data.user.username + ': ' + createMessage.text);
+
+    this.server.to(socket.id).emit('message', createMessage);
+  }
 }
