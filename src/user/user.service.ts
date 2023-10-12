@@ -8,6 +8,7 @@ import { updateUserDto } from './dto/update-user.dto';
 import { getUserPageById } from './dto/get-user-page-by-id.dto';
 import * as bcrypt from 'bcrypt';
 import { Room } from 'src/chat/schemas/room.schema';
+import { getProfileAccountUserDto } from './dto/get-profile-account-user.dto';
 
 @Injectable()
 export class UserService {
@@ -54,6 +55,23 @@ export class UserService {
   async findByUsername(username: string): Promise<User> {
     const user = await this.UserModel.findOne({ username: username }).exec();
     return user;
+  }
+
+  async getProfileAccountUser(userId: string): Promise<getProfileAccountUserDto> {
+    try{
+      const user = await this.UserModel.findById(userId);
+      if(!user){
+        throw new HttpException('User not found: '+userId,HttpStatus.NOT_FOUND);
+      }
+      const result = new getProfileAccountUserDto();
+      result.username = user.username;
+      result.firstname = user.firstname;
+      result.lastname = user.lastname;
+      result.phone = user.phone;
+      return result;
+    }catch(err){
+      throw new HttpException('Error to get profile account page: '+err.message,HttpStatus.INTERNAL_SERVER_ERROR);
+    } 
   }
   
   async create(user: createUserDto): Promise<User> {
