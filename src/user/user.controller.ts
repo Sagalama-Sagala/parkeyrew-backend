@@ -19,6 +19,7 @@ import {
   ApiSecurity,
   ApiTags,
 } from '@nestjs/swagger';
+import { updateUserPasswordDto } from './dto/update-user-password.dto';
 
 @ApiTags('User')
 @Controller('user')
@@ -94,9 +95,8 @@ export class UserController {
   @ApiBadRequestResponse({
     description: 'Cannot edit user info',
   })
-  @Post('edit-user-info')
-  async editUserInfo() {}
 
+  ////////////////////////////////////////////////////////////////////////////////
   @ApiSecurity('JWT-auth')
   @Post('follow-user-by-id')
   async followUserById(@Req() req: any): Promise<any> {
@@ -125,5 +125,27 @@ export class UserController {
     }
 
     return { message: 'User unfollowed successfully' };
+  }
+  ////////////////////////////////////////////////////////////////////////////////////////////
+  @Post('edit-user-info')
+  async editUserInfo(
+    @Req() req: any,
+    @Body() userInfo: updateUserDto,
+  ): Promise<updateUserDto> {
+    return await this.userService.updateById(req.userId, userInfo);
+  }
+
+  @ApiOkResponse({
+    description: 'Edit user password successfully',
+  })
+  @ApiBadRequestResponse({
+    description: 'Cannot edit user password',
+  })
+  @Post('edit-user-password')
+  async editUserPassword(
+    @Req() req: any,
+    @Body() passwordInfo: updateUserPasswordDto,
+  ): Promise<any> {
+    return await this.userService.updatePasswordById(req.userId, passwordInfo);
   }
 }
