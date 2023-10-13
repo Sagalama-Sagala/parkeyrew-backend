@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { ChatGateway } from './gateway/chat/chat.gateway';
 import { AuthModule } from 'src/auth/auth.module';
 import { UserModule } from 'src/user/user.module';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -11,6 +10,7 @@ import { JoinedRoomSchema } from './schemas/joined-room.schema';
 import { ConnectedUserSchema } from './schemas/connected-user.schema';
 import { ConnectedUserService } from './service/connected-user/connected-user.service';
 import { JoinedRoomService } from './service/joined-room/joined-room.service';
+import { ChatGateway } from './gateway/chat.gateway';
 
 @Module({
   imports: [

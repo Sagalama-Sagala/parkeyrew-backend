@@ -8,6 +8,7 @@ import { updateUserDto } from './dto/update-user.dto';
 import { getUserPageById } from './dto/get-user-page-by-id.dto';
 import * as bcrypt from 'bcrypt';
 import { Room } from 'src/chat/schemas/room.schema';
+import { getProfileAccountUserDto } from './dto/get-profile-account-user.dto';
 
 @Injectable()
 export class UserService {
@@ -55,6 +56,23 @@ export class UserService {
     const user = await this.UserModel.findOne({ username: username }).exec();
     return user;
   }
+
+  async getProfileAccountUser(userId: string): Promise<getProfileAccountUserDto> {
+    try{
+      const user = await this.UserModel.findById(userId);
+      if(!user){
+        throw new HttpException('User not found: '+userId,HttpStatus.NOT_FOUND);
+      }
+      const result = new getProfileAccountUserDto();
+      result.username = user.username;
+      result.firstname = user.firstname;
+      result.lastname = user.lastname;
+      result.phone = user.phone;
+      return result;
+    }catch(err){
+      throw new HttpException('Error to get profile account page: '+err.message,HttpStatus.INTERNAL_SERVER_ERROR);
+    } 
+  }
   
   async create(user: createUserDto): Promise<User> {
     try {
@@ -91,6 +109,25 @@ export class UserService {
       });
     } catch (error) {
       throw new HttpException('User not found.', HttpStatus.NOT_FOUND);
+    }
+  }
+
+  async updateReviewStar(userId: string, star: number): Promise<User>{
+    try{
+      const user = await this.UserModel.findById(userId);
+      if(!user){
+        throw new HttpException('User not found: ' + userId,404);
+      }
+      const newStar = (user.reviewStar === -1) ? star : ((user.reviewStar * user.reviewCount) + star)/(user.reviewCount+1);
+      return await this.UserModel.findOneAndUpdate(
+        { _id: userId },
+        { $set: 
+          { reviewStar: newStar, reviewCount: user.reviewCount+1 }
+        },
+        { new: true, runValidators: true },
+      );
+    }catch(err){
+      throw new HttpException('Error to update review star: '+err.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 

@@ -10,6 +10,7 @@ import {
   ApiSecurity,
   ApiTags,
 } from '@nestjs/swagger';
+import { getProfileAccountUserDto } from './dto/get-profile-account-user.dto';
 
 @ApiTags('User')
 @Controller('user')
@@ -57,6 +58,17 @@ export class UserController {
     return await this.userService.findUserPageById(id);
   }
 
+  @ApiOkResponse({
+    description: 'Get profile account successfully',
+  })
+  @ApiNotFoundResponse({
+    description: 'Profile not found',
+  })
+  @Get('get-profile-account-user')
+  async getProfileAccountUser(@Req() req:any): Promise<getProfileAccountUserDto> {
+    return await this.userService.getProfileAccountUser(req.userId);
+  }
+
   @ApiCreatedResponse({
     description: 'Created user object as response',
     type: User,
@@ -70,5 +82,16 @@ export class UserController {
     user: createUserDto,
   ): Promise<createUserDto> {
     return await this.userService.register(user);
+  }
+
+  @ApiOkResponse({
+    description: 'Edit user info successfully'
+  })
+  @ApiBadRequestResponse({
+    description: 'Cannot edit user info'
+  })
+  @Post('edit-user-info')
+  async editUserInfo(){
+
   }
 }

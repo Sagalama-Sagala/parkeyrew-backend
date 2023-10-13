@@ -25,7 +25,7 @@ export class JoinedRoomService {
   }
 
   async deleteBySocketId(socketId: string) {
-    return this.JoinedRoomModel.deleteMany({ socketId: socketId });
+    return this.JoinedRoomModel.deleteOne({ socketId: socketId });
   }
 
   async deleteAll() {
