@@ -96,10 +96,10 @@ export class ProductService {
     try {
       const newProduct = await this.ProductModel.findOneAndUpdate(
         { _id: product.productId, owner: ownerId },
-        { $set: product }, 
-        { new: true, runValidators: true }
+        { $set: product },
+        { new: true, runValidators: true },
       );
-      if(!newProduct){
+      if (!newProduct) {
         throw new HttpException('Product not found.', HttpStatus.NOT_FOUND);
       }
       return newProduct;

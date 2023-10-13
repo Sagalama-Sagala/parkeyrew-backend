@@ -1,11 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Post,
-  Req,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req } from '@nestjs/common';
 import { Product } from './schemas/product.schema';
 import {
   ApiBadRequestResponse,
@@ -67,7 +60,9 @@ export class ProductController {
   })
   @ApiSecurity('JWT-auth')
   @Get('get-info-product-page/:id')
-  async getInfoProductPage(@Param('id') id: string): Promise<getInfoProductPageDto> {
+  async getInfoProductPage(
+    @Param('id') id: string,
+  ): Promise<getInfoProductPageDto> {
     return await this.productService.findInfoProductPage(id);
   }
 
@@ -80,7 +75,10 @@ export class ProductController {
   })
   @ApiSecurity('JWT-auth')
   @Post('create-product')
-  async createProduct(@Req() req: any, @Body() product: createProductDto):Promise<Product> {
+  async createProduct(
+    @Req() req: any,
+    @Body() product: createProductDto,
+  ): Promise<Product> {
     const userId = req.userId;
     const newProduct = await this.productService.create(product, userId);
     newProduct.owner = userId;
@@ -88,13 +86,16 @@ export class ProductController {
   }
 
   @ApiOkResponse({
-    description: 'update product successfully'
+    description: 'update product successfully',
   })
   @ApiInternalServerErrorResponse({
-    description: 'Error to update product'
+    description: 'Error to update product',
   })
   @Post('edit-product-info')
-  async editProductInfo(@Req() req: any,@Body() productInfo: updateProductDto): Promise<Product> {
-    return await this.productService.update(req.userId,productInfo);
+  async editProductInfo(
+    @Req() req: any,
+    @Body() productInfo: updateProductDto,
+  ): Promise<Product> {
+    return await this.productService.update(req.userId, productInfo);
   }
 }
