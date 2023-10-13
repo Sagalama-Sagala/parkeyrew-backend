@@ -3,6 +3,7 @@ import { IsNotEmpty, IsString, MinLength } from "class-validator";
 
 export class updateUserPasswordDto{
     @ApiProperty()
+    @IsString()
     readonly oldPassword: string;
 
     @ApiProperty()
