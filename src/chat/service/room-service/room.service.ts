@@ -5,12 +5,14 @@ import { getRoomDto } from 'src/chat/dto/get-room.dto';
 import { Room } from 'src/chat/schemas/room.schema';
 import { Product } from 'src/product/schemas/product.schema';
 import { User } from 'src/user/schemas/user.schema';
+import { MessageService } from '../message/message.service';
 
 @Injectable()
 export class RoomService {
   constructor(
     @InjectModel(Room.name)
     private RoomModel: mongoose.Model<Room>,
+    private messageService: MessageService,
   ) {}
 
   async createRoom(room: Room, customer: User): Promise<Room> {
@@ -57,8 +59,11 @@ export class RoomService {
         user: room.customer,
       };
     }
+    newRoom.id = room._id.toString();
     newRoom.product = room.product;
-    newRoom.messages = room.messages;
+    newRoom.lastMessage = await this.messageService.findLastOne(
+      room._id.toString(),
+    );
     return newRoom;
   }
 
@@ -94,8 +99,10 @@ export class RoomService {
           user: room.customer,
         };
       }
+      newRoom.lastMessage = await this.messageService.findLastOne(
+        room._id.toString(),
+      );
       newRoom.product = room.product;
-      newRoom.messages = room.messages;
       newRoom.id = room._id.toString();
       newRooms.push(newRoom);
     }
