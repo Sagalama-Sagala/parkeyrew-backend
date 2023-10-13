@@ -100,12 +100,23 @@ export class UserService {
     }
   }
   
-  async updateById(id: string, user: updateUserDto): Promise<User> {
+  async updateById(id: string, userInfo: updateUserDto): Promise<updateUserDto> {
+    try{
+      const user = await this.UserModel.findOne({ _id: { $ne: id }, username: userInfo.username });
+      if(user){
+        throw new HttpException('',HttpStatus.BAD_REQUEST);
+      }
+    }
+    catch (err) {
+      throw new HttpException('This username is already exist: '+userInfo.username,HttpStatus.BAD_REQUEST);
+    }
     try {
-      return await this.UserModel.findOneAndUpdate({ _id: id }, user, {
-        new: true,
-        runValidators: true,
-      });
+      await this.UserModel.findOneAndUpdate(
+        { _id: id }, 
+        { $set: userInfo }, 
+        { new: true, runValidators: true, }
+      );
+      return userInfo;
     } catch (error) {
       throw new HttpException('User not found.', HttpStatus.NOT_FOUND);
     }

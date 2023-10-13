@@ -91,7 +91,7 @@ export class UserController {
     description: 'Cannot edit user info'
   })
   @Post('edit-user-info')
-  async editUserInfo(){
-
+  async editUserInfo(@Req() req: any, @Body() userInfo: updateUserDto): Promise<updateUserDto>{
+    return await this.userService.updateById(req.userId, userInfo);
   }
 }
