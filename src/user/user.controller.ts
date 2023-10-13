@@ -11,6 +11,7 @@ import {
   ApiSecurity,
   ApiTags,
 } from '@nestjs/swagger';
+import { updateUserPasswordDto } from './dto/update-user-password.dto';
 
 @ApiTags('User')
 @Controller('user')
@@ -93,5 +94,16 @@ export class UserController {
   @Post('edit-user-info')
   async editUserInfo(@Req() req: any, @Body() userInfo: updateUserDto): Promise<updateUserDto>{
     return await this.userService.updateById(req.userId, userInfo);
+  }
+
+  @ApiOkResponse({
+    description: 'Edit user password successfully'
+  })
+  @ApiBadRequestResponse({
+    description: 'Cannot edit user password'
+  })
+  @Post('edit-user-password')
+  async editUserPasswaord(@Req() req: any, @Body() passwordInfo: updateUserPasswordDto): Promise<any>{
+    return await this.userService.updatePasswordById(req.userId, passwordInfo);
   }
 }

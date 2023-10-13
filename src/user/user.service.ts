@@ -8,6 +8,7 @@ import { updateUserDto } from './dto/update-user.dto';
 import { getUserPageById } from './dto/get-user-page-by-id.dto';
 import * as bcrypt from 'bcrypt';
 import { Room } from 'src/chat/schemas/room.schema';
+import { updateUserPasswordDto } from './dto/update-user-password.dto';
 
 @Injectable()
 export class UserService {
@@ -119,6 +120,29 @@ export class UserService {
       return userInfo;
     } catch (error) {
       throw new HttpException('User not found.', HttpStatus.NOT_FOUND);
+    }
+  }
+
+  async updatePasswordById(userId: string, passwordInfo: updateUserPasswordDto): Promise<any>{
+    try{  
+      const user = await this.UserModel.findById(userId);
+      if(!user){
+        return { message:'User not found: '+userId, status: HttpStatus.NOT_FOUND};
+      }
+      const isMatch = await bcrypt.compare(passwordInfo.oldPassword, user.password);
+      if(!isMatch){
+        return { message:'Old password is not correct', status: HttpStatus.BAD_REQUEST};
+      }
+      const hashPassword = await bcrypt.hash(passwordInfo.newPassword,10);
+      await this.UserModel.findOneAndUpdate(
+        { _id: userId },
+        { $set: { password: hashPassword } },
+        { new: true, runValidators: true },
+      );
+      return { message: 'Update password successfully', status: HttpStatus.OK};
+    }
+    catch(err){
+      throw new HttpException('Error to reset password: '+err.message,HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
