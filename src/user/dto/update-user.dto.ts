@@ -6,24 +6,24 @@ export class updateUserDto {
   @IsString()
   @IsNotEmpty()
   @Matches(/[a-zA-Z0-9_-]{2,20}/)
-  readonly username: string;
+  username: string;
 
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
   @Matches(/[a-zA-Z]/)
-  readonly firstname: string;
+  firstname: string;
 
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
   @Matches(/[a-zA-Z]/)
-  readonly lastname: string;
+  lastname: string;
 
   @ApiProperty()
   @IsNumberString()
   @IsString()
   @MaxLength(10)
   @Matches(/[0-9]{10}/)
-  readonly phone: string;
+  phone: string;
 }

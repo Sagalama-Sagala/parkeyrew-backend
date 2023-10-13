@@ -2,6 +2,7 @@ import { Body, Controller, Get, Param, Post, Req } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './schemas/user.schema';
 import { createUserDto } from './dto/create-user.dto';
+import { updateUserDto } from './dto/update-user.dto';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
@@ -10,7 +11,6 @@ import {
   ApiSecurity,
   ApiTags,
 } from '@nestjs/swagger';
-import { getProfileAccountUserDto } from './dto/get-profile-account-user.dto';
 
 @ApiTags('User')
 @Controller('user')
@@ -65,7 +65,7 @@ export class UserController {
     description: 'Profile not found',
   })
   @Get('get-profile-account-user')
-  async getProfileAccountUser(@Req() req:any): Promise<getProfileAccountUserDto> {
+  async getProfileAccountUser(@Req() req:any): Promise<updateUserDto> {
     return await this.userService.getProfileAccountUser(req.userId);
   }
 
