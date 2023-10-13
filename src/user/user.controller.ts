@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+  Req,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './schemas/user.schema';
 import { createUserDto } from './dto/create-user.dto';
@@ -15,7 +23,7 @@ import {
 @ApiTags('User')
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService,) {}
+  constructor(private readonly userService: UserService) {}
 
   @ApiCreatedResponse({
     description: 'Get user objects as response',
@@ -37,9 +45,7 @@ export class UserController {
   })
   @ApiSecurity('JWT-auth')
   @Get('get-user-page-by-id')
-  async getUserById(
-    @Req() req: any,
-  ){
+  async getUserById(@Req() req: any) {
     return await this.userService.findUserPageById(req.userId);
   }
 
@@ -52,9 +58,7 @@ export class UserController {
   })
   @ApiSecurity('JWT-auth')
   @Get('get-shop-page-by-id/:id')
-  async getShopById(
-    @Param('id') id: string
-  ){
+  async getShopById(@Param('id') id: string) {
     return await this.userService.findUserPageById(id);
   }
 
@@ -65,7 +69,7 @@ export class UserController {
     description: 'Profile not found',
   })
   @Get('get-profile-account-user')
-  async getProfileAccountUser(@Req() req:any): Promise<updateUserDto> {
+  async getProfileAccountUser(@Req() req: any): Promise<updateUserDto> {
     return await this.userService.getProfileAccountUser(req.userId);
   }
 
@@ -85,13 +89,41 @@ export class UserController {
   }
 
   @ApiOkResponse({
-    description: 'Edit user info successfully'
+    description: 'Edit user info successfully',
   })
   @ApiBadRequestResponse({
-    description: 'Cannot edit user info'
+    description: 'Cannot edit user info',
   })
   @Post('edit-user-info')
-  async editUserInfo(){
+  async editUserInfo() {}
 
+  @ApiSecurity('JWT-auth')
+  @Post('follow-user-by-id')
+  async followUserById(@Req() req: any): Promise<any> {
+    const result = await this.userService.followUserById(
+      req.userId,
+      req.body.userId,
+    );
+    //return await this.userService.followUserById(req.userId, req.body.userId);
+    // return { message: 'User followed successfully', result };
+    if (!result) {
+      throw new NotFoundException('User not found or already followed.');
+    }
+    return { message: 'User followed successfully' };
+  }
+
+  @ApiSecurity('JWT-auth')
+  @Post('unfollow-user-by-id')
+  async unfollowUserById(@Req() req: any): Promise<any> {
+    const result = await this.userService.unfollowUserById(
+      req.userId,
+      req.body.userId,
+    );
+
+    if (!result) {
+      throw new NotFoundException('User not found or not currently followed.');
+    }
+
+    return { message: 'User unfollowed successfully' };
   }
 }
