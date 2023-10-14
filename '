@@ -129,7 +129,7 @@ export class UserController {
     return { message: 'User unfollowed successfully' };
   }
   ////////////////////////////////////////////////////////////////////////////////////////////
-  @Put('edit-user-info')
+  @Post('edit-user-info')
   async editUserInfo(
     @Req() req: any,
     @Body() userInfo: updateUserDto,
@@ -143,8 +143,7 @@ export class UserController {
   @ApiBadRequestResponse({
     description: 'Cannot edit user password',
   })
-  @Put('edit-user-password')
-  @ApiSecurity('JWT-auth')
+  @Post('edit-user-password')
   async editUserPassword(
     @Req() req: any,
     @Body() passwordInfo: updateUserPasswordDto,
@@ -169,16 +168,15 @@ export class UserController {
     description: 'Add product to wishlist successfully',
   })
   @ApiBadRequestResponse({
-    description: 'Can not add product to wishlist, try again.',
+    description: 'Can not add product to wishlist, try again',
   })
   @ApiSecurity('JWT-auth')
   @Put('add-user-wishlist/:productId')
-  async toggleUserWishlist(
+  async addUserWishlist(
     @Req() req: any,
     @Param('productId') produtcId: string,
   ): Promise<User> {
-    console.log(req.userId);
-    const result = this.userService.toggleWishList(req.userId, produtcId);
+    const result = this.userService.addWishList(req.userId, produtcId);
     return result;
   }
 }

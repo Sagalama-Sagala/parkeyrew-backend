@@ -41,7 +41,10 @@ export class ProductService {
   }
 
   async findAllByOwnerId(userId: string): Promise<Product[]> {
-    const products = await this.ProductModel.find({ owner: userId });
+    const products = await this.ProductModel.find({ owner: userId }).populate({
+      path: 'owner',
+      select: 'username reviewStar',
+    });
     return products;
   }
 
@@ -50,7 +53,7 @@ export class ProductService {
     return user;
   }
 
-  async findInfoProductPage(productId: string): Promise<any> {
+  async findInfoProductPage(productId: string, userId: string): Promise<any> {
     try {
       const product = await this.ProductModel.findById(productId);
       const newProduct = await this.ProductModel.findOneAndUpdate(
@@ -67,6 +70,8 @@ export class ProductService {
       const result = new getInfoProductPageDto();
       result.product = newProduct;
       result.productsOfUser = productsOfUser;
+      result.isUserProduct =
+        userId.toString() === newProduct.owner._id.toString() ? true : false;
       return result;
     } catch (err) {
       throw new HttpException(
