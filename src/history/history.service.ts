@@ -24,4 +24,18 @@ export class HistoryService {
             throw new HttpException('Error to creating History: '+err.message,err.status);
         }
     }
+
+    async updateStatus(historyId: string, status: string): Promise<History>{
+        try{
+            const history: History = await this.HistoryModel.findOneAndUpdate(
+                { _id: historyId },
+                { $set: { status: status } },
+                { new: true, runValidators: true },
+            )
+            return history
+        }
+        catch(err){
+            throw new HttpException('Error to updating History: '+err.message,err.status);
+        }
+    }
 }

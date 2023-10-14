@@ -13,12 +13,9 @@ import { ChatModule } from './chat/chat.module';
 import { AuthMiddleware } from './middleware/auth.middleware';
 import { ReviewModule } from './review/review.module';
 import { AddressModule } from './address/address.module';
-<<<<<<< HEAD
 import { HistoryModule } from './history/history.module';
-=======
 import { UploadModule } from './file-upload/file-upload.module';
 import { MulterModule } from '@nestjs/platform-express';
->>>>>>> 6b2912421280cbb87f4a84324c28ac0b95749017
 
 @Module({
   imports: [
@@ -30,11 +27,8 @@ import { MulterModule } from '@nestjs/platform-express';
     ChatModule,
     ReviewModule,
     AddressModule,
-<<<<<<< HEAD
     HistoryModule,
-=======
     UploadModule
->>>>>>> 6b2912421280cbb87f4a84324c28ac0b95749017
   ],
 })
 export class AppModule implements NestModule {
