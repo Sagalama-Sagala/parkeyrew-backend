@@ -1,9 +1,10 @@
-import { Body, Controller, Get, Post, Req } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Req } from "@nestjs/common";
 import { ApiBadRequestResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { AddressService } from "./address.service";
 import { Address } from "./schemas/address.schema";
 import { createAddressDto } from "./dto/create-address.dto";
 import { getAddressByUserIdDto } from "./dto/get-address-by-userId.dto";
+import { updateAddressInfoDto } from "./dto/update-address-info.dto";
 
 
 @ApiTags('Address')
@@ -37,5 +38,21 @@ export class AddressController{
         const result =  await this.addressService.create(req.userId, addressInfo);
         result.owner.password = "";
         return result;
+    }
+
+    @ApiCreatedResponse({
+        description: 'Update address successfully',
+    })
+    @ApiBadRequestResponse({
+        description: 'Cannot update address',
+    })
+    @Post('update-address-info')
+    async updateAddressInfo(@Body() addressInfo: updateAddressInfoDto): Promise<Address>{
+        return await this.addressService.update(addressInfo);
+    }
+
+    @Post('delete-address/:id')
+    async delete(@Param('id') id: string): Promise<Address>{
+        return await this.addressService.delete(id);
     }
 }

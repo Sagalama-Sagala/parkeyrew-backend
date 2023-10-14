@@ -1,7 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsNotEmpty, IsNumberString, IsString, Matches, MaxLength } from 'class-validator';
 
-export class createAddressDto{
+export class updateAddressInfoDto {
+    @ApiProperty()
+    @IsString()
+    readonly addressId: string;
 
     @ApiProperty()
     @IsString()
