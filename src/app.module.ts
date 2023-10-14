@@ -13,6 +13,9 @@ import { ChatModule } from './chat/chat.module';
 import { AuthMiddleware } from './middleware/auth.middleware';
 import { ReviewModule } from './review/review.module';
 import { AddressModule } from './address/address.module';
+import { HistoryModule } from './history/history.module';
+import { UploadModule } from './file-upload/file-upload.module';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
@@ -24,6 +27,8 @@ import { AddressModule } from './address/address.module';
     ChatModule,
     ReviewModule,
     AddressModule,
+    HistoryModule,
+    UploadModule
   ],
 })
 export class AppModule implements NestModule {
@@ -47,3 +52,4 @@ export class AppModule implements NestModule {
       .forRoutes({ path: '*', method: RequestMethod.ALL });
   }
 }
+//kuay

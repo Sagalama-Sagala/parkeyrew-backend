@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -21,6 +22,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { updateUserPasswordDto } from './dto/update-user-password.dto';
+import { setMainAddressDto } from './dto/set-main-address.dto';
 
 @ApiTags('User')
 @Controller('user')
@@ -151,6 +153,17 @@ export class UserController {
     @Body() passwordInfo: updateUserPasswordDto,
   ): Promise<any> {
     return await this.userService.updatePasswordById(req.userId, passwordInfo);
+  }
+
+  @ApiOkResponse({
+    description: 'Set main address successfully',
+  })
+  @ApiBadRequestResponse({
+    description: 'Cannot set main address',
+  })
+  @Post('set-main-address')
+  async setMainAddress(@Req() req: any, @Body() address: setMainAddressDto): Promise<any> {
+    return await this.userService.setMainAddress(address.addressId,req.userId);
   }
 
   @ApiOkResponse({
