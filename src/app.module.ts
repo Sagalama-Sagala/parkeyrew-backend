@@ -13,6 +13,8 @@ import { ChatModule } from './chat/chat.module';
 import { AuthMiddleware } from './middleware/auth.middleware';
 import { ReviewModule } from './review/review.module';
 import { AddressModule } from './address/address.module';
+import { UploadModule } from './file-upload/upload.module';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
@@ -24,6 +26,7 @@ import { AddressModule } from './address/address.module';
     ChatModule,
     ReviewModule,
     AddressModule,
+    UploadModule,
   ],
 })
 export class AppModule implements NestModule {
