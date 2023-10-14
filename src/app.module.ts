@@ -27,8 +27,8 @@ import { FileUploadModule } from './file-upload/file-upload.module';
     ChatModule,
     ReviewModule,
     AddressModule,
-    MinioClientModule,
-    FileUploadModule
+    //MinioClientModule,
+    //FileUploadModule
   ],
 })
 export class AppModule implements NestModule {
