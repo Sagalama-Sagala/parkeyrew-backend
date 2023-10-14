@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MinioClientService } from './minio-client.service';
 import { MinioModule } from 'nestjs-minio-client';
-import { config } from './config'
+import { config } from './config';
 @Module({
   imports: [
     MinioModule.register({
@@ -10,9 +10,9 @@ import { config } from './config'
       useSSL: false,
       accessKey: config.MINIO_ACCESS_KEY,
       secretKey: config.MINIO_SECRET_KEY,
-    })
+    }),
   ],
   providers: [MinioClientService],
-  exports: [MinioClientService]
+  exports: [MinioClientService],
 })
 export class MinioClientModule {}

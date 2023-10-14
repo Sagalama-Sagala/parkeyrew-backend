@@ -13,10 +13,6 @@ import { ChatModule } from './chat/chat.module';
 import { AuthMiddleware } from './middleware/auth.middleware';
 import { ReviewModule } from './review/review.module';
 import { AddressModule } from './address/address.module';
-import { MulterModule } from '@nestjs/platform-express';
-import { MinioClientModule } from './minio-client/minio-client.module';
-import { FileUploadModule } from './file-upload/file-upload.module';
-import { HistoryModule } from './history/history.module';
 
 @Module({
   imports: [
@@ -28,9 +24,6 @@ import { HistoryModule } from './history/history.module';
     ChatModule,
     ReviewModule,
     AddressModule,
-    MinioClientModule,
-    FileUploadModule,
-    HistoryModule,
   ],
 })
 export class AppModule implements NestModule {
@@ -50,10 +43,6 @@ export class AppModule implements NestModule {
           path: '/product',
           method: RequestMethod.GET,
         },
-        // {
-        //   path: '/product/get-info-product-page/(.*)',
-        //   method: RequestMethod.GET,
-        // },
       )
       .forRoutes({ path: '*', method: RequestMethod.ALL });
   }
