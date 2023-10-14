@@ -15,7 +15,7 @@ import { getUserPageById } from './dto/get-user-page-by-id.dto';
 import * as bcrypt from 'bcrypt';
 import { Room } from 'src/chat/schemas/room.schema';
 import { updateUserPasswordDto } from './dto/update-user-password.dto';
-import { Address } from 'src/address/schemas/address.schema';
+import { AddressService } from 'src/address/address.service';
 
 @Injectable()
 export class UserService {
@@ -24,6 +24,8 @@ export class UserService {
     private UserModel: mongoose.Model<User>,
     @Inject(forwardRef(() => ProductService))
     private readonly productService: ProductService,
+    @Inject(forwardRef(() => AddressService))
+    private readonly addressService: AddressService,
   ) {}
 
   async findAll(): Promise<User[]> {
@@ -213,8 +215,15 @@ export class UserService {
     }
   }
 
-  async setMainAddress(address: Address, userId: string): Promise<User> {
+  async setMainAddress(addressId: string, userId: string): Promise<any> {
     try {
+      const address = await this.addressService.findById(addressId);
+      if(!address){
+        throw new HttpException('Address not found', 404);
+      }
+      if(address.owner._id.toString() != userId){
+        throw new HttpException('This address is not owned by this user: '+userId,400);
+      }
       return await this.UserModel.findOneAndUpdate(
         { _id: userId },
         { $set: { mainAddress: address } },
@@ -223,7 +232,7 @@ export class UserService {
     } catch (err) {
       throw new HttpException(
         'Error to set main address: ' + err.message,
-        HttpStatus.INTERNAL_SERVER_ERROR,
+        err.status,
       );
     }
   }
