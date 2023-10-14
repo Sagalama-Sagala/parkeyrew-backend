@@ -60,6 +60,7 @@ export class ChatGateway {
         return this.server.to(socket.id).emit('rooms', rooms);
       }
     } catch {
+      console.log('...not connect');
       return this.disconnect(socket);
     }
   }
@@ -138,13 +139,15 @@ export class ChatGateway {
   async onAddMessage(socket: Socket, message: any) {
     const roomId = message.roomId;
     const newMessage = message.message;
-    const room: Room = await this.roomService.findById(roomId);
+    const room = await this.roomService.findById(roomId);
+    const joinedUsers = await this.joinedRoomService.findByRoom(room);
+    console.log(joinedUsers.length);
     const createMessage = await this.messageService.create({
       ...newMessage,
       user: socket.data.user,
       room: room,
+      otherUserRead: joinedUsers.length === 1 ? false : true,
     });
-    const joinedUsers = await this.joinedRoomService.findByRoom(room);
     for (const user of joinedUsers) {
       const newMessage: getMessageDto = {
         text: createMessage.text,
