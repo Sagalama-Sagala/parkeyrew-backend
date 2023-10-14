@@ -16,6 +16,7 @@ import { AddressModule } from './address/address.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { MinioClientModule } from './minio-client/minio-client.module';
 import { FileUploadModule } from './file-upload/file-upload.module';
+import { HistoryModule } from './history/history.module';
 
 @Module({
   imports: [
@@ -28,7 +29,8 @@ import { FileUploadModule } from './file-upload/file-upload.module';
     ReviewModule,
     AddressModule,
     MinioClientModule,
-    FileUploadModule
+    FileUploadModule,
+    HistoryModule,
   ],
 })
 export class AppModule implements NestModule {
