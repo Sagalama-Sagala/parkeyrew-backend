@@ -4,6 +4,7 @@ import { Address } from "./schemas/address.schema";
 import mongoose from "mongoose";
 import { createAddressDto } from "./dto/create-address.dto";
 import { UserService } from "src/user/user.service";
+import { getAddressByUserIdDto } from "./dto/get-address-by-userId.dto";
 
 @Injectable()
 export class AddressService{
@@ -12,6 +13,25 @@ export class AddressService{
         private AddressModel: mongoose.Model<Address>,
         private readonly userService: UserService,
     ){};
+
+    async getAddressByUserId(userId: string): Promise<getAddressByUserIdDto>{
+        try{
+            const user = await this.userService.findById(userId);
+            if(!user){
+                throw new HttpException('User Not Found',404);
+            }
+            const result = new getAddressByUserIdDto();
+            if(user.mainAddress===undefined){
+                return result
+            }
+            result.mainAddress = await this.AddressModel.findById(user.mainAddress);
+            result.Addresses = await this.AddressModel.find({ _id: { $ne: user.mainAddress }, owner: userId});
+            return result
+        }
+        catch(err){
+            throw new HttpException('Error while getting address: '+err.message, err.status);
+        }
+    }
 
     async create(userId: string, addressInfo: createAddressDto): Promise<any>{
         try{
