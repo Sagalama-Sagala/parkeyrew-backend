@@ -13,6 +13,7 @@ import { ChatModule } from './chat/chat.module';
 import { AuthMiddleware } from './middleware/auth.middleware';
 import { ReviewModule } from './review/review.module';
 import { AddressModule } from './address/address.module';
+import { HistoryModule } from './history/history.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { AddressModule } from './address/address.module';
     ChatModule,
     ReviewModule,
     AddressModule,
+    HistoryModule,
   ],
 })
 export class AppModule implements NestModule {
