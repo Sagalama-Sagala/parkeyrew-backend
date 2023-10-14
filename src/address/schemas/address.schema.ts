@@ -1,7 +1,7 @@
-import { SchemaFactory, Schema, Prop } from "@nestjs/mongoose";
-import { ApiProperty } from "@nestjs/swagger";
-import mongoose from "mongoose";
-import { User } from "src/user/schemas/user.schema";
+import { SchemaFactory, Schema, Prop } from '@nestjs/mongoose';
+import { ApiProperty } from '@nestjs/swagger';
+import mongoose from 'mongoose';
+import { User } from 'src/user/schemas/user.schema';
 
 @Schema({
     timestamps: true,
@@ -9,7 +9,6 @@ import { User } from "src/user/schemas/user.schema";
 export class Address {
     _id: mongoose.Types.ObjectId;
 
-    @ApiProperty()
     @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
     owner: User;
 

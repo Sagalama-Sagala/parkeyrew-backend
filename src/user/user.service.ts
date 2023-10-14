@@ -15,6 +15,7 @@ import { getUserPageById } from './dto/get-user-page-by-id.dto';
 import * as bcrypt from 'bcrypt';
 import { Room } from 'src/chat/schemas/room.schema';
 import { updateUserPasswordDto } from './dto/update-user-password.dto';
+import { Address } from 'src/address/schemas/address.schema';
 
 @Injectable()
 export class UserService {
@@ -194,6 +195,19 @@ export class UserService {
         'Error to update review star: ' + err.message,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
+    }
+  }
+
+  async setMainAddress(address: Address, userId: string): Promise<User>{
+    try{
+      return await this.UserModel.findOneAndUpdate(
+        { _id: userId},
+        { $set: { mainAddress: address } },
+        { new: true, runValidators: true },
+      );
+    }
+    catch(err){
+      throw new HttpException('Error to set main address: ' + err.message,HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
