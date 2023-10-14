@@ -13,8 +13,6 @@ import { ChatModule } from './chat/chat.module';
 import { AuthMiddleware } from './middleware/auth.middleware';
 import { ReviewModule } from './review/review.module';
 import { AddressModule } from './address/address.module';
-import { UploadModule } from './file-upload/upload.module';
-import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
@@ -26,7 +24,6 @@ import { MulterModule } from '@nestjs/platform-express';
     ChatModule,
     ReviewModule,
     AddressModule,
-    UploadModule,
   ],
 })
 export class AppModule implements NestModule {
@@ -46,10 +43,6 @@ export class AppModule implements NestModule {
           path: '/product',
           method: RequestMethod.GET,
         },
-        // {
-        //   path: '/product/get-info-product-page/(.*)',
-        //   method: RequestMethod.GET,
-        // },
       )
       .forRoutes({ path: '*', method: RequestMethod.ALL });
   }
