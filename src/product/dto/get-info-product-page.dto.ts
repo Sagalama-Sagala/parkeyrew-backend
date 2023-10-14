@@ -7,4 +7,7 @@ export class getInfoProductPageDto {
 
   @ApiProperty()
   productsOfUser: Product[];
+
+  @ApiProperty()
+  isUserProduct: boolean;
 }
