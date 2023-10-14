@@ -33,6 +33,7 @@ export class UserService {
   async findUserPageById(userId: string) {
     try {
       const user = await this.UserModel.findById(userId);
+      console.log(user);
       if (!user) {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
@@ -40,8 +41,8 @@ export class UserService {
       const result = new getUserPageById();
       result.username = user.username;
       result.reviewStar = user.reviewStar;
-      result.followerCount = user.followerList.length;
-      result.followingCount = user.followingList.length;
+      result.follower = user.followerList;
+      result.following = user.followingList;
       result.description = user.description;
       result.products = products;
       return result;
@@ -151,26 +152,40 @@ export class UserService {
     }
   }
 
-  async updatePasswordById(userId: string, passwordInfo: updateUserPasswordDto): Promise<any>{
-    try{  
+  async updatePasswordById(
+    userId: string,
+    passwordInfo: updateUserPasswordDto,
+  ): Promise<any> {
+    try {
       const user = await this.UserModel.findById(userId);
-      if(!user){
-        return { message:'User not found: '+userId, status: HttpStatus.NOT_FOUND};
+      if (!user) {
+        return {
+          message: 'User not found: ' + userId,
+          status: HttpStatus.NOT_FOUND,
+        };
       }
-      const isMatch = await bcrypt.compare(passwordInfo.oldPassword, user.password);
-      if(!isMatch){
-        return { message:'Old password is not correct', status: HttpStatus.BAD_REQUEST};
+      const isMatch = await bcrypt.compare(
+        passwordInfo.oldPassword,
+        user.password,
+      );
+      if (!isMatch) {
+        return {
+          message: 'Old password is not correct',
+          status: HttpStatus.BAD_REQUEST,
+        };
       }
-      const hashPassword = await bcrypt.hash(passwordInfo.newPassword,10);
+      const hashPassword = await bcrypt.hash(passwordInfo.newPassword, 10);
       await this.UserModel.findOneAndUpdate(
         { _id: userId },
         { $set: { password: hashPassword } },
         { new: true, runValidators: true },
       );
-      return { message: 'Update password successfully', status: HttpStatus.OK};
-    }
-    catch(err){
-      throw new HttpException('Error to reset password: '+err.message,HttpStatus.INTERNAL_SERVER_ERROR);
+      return { message: 'Update password successfully', status: HttpStatus.OK };
+    } catch (err) {
+      throw new HttpException(
+        'Error to reset password: ' + err.message,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -198,16 +213,18 @@ export class UserService {
     }
   }
 
-  async setMainAddress(address: Address, userId: string): Promise<User>{
-    try{
+  async setMainAddress(address: Address, userId: string): Promise<User> {
+    try {
       return await this.UserModel.findOneAndUpdate(
-        { _id: userId},
+        { _id: userId },
         { $set: { mainAddress: address } },
         { new: true, runValidators: true },
       );
-    }
-    catch(err){
-      throw new HttpException('Error to set main address: ' + err.message,HttpStatus.INTERNAL_SERVER_ERROR);
+    } catch (err) {
+      throw new HttpException(
+        'Error to set main address: ' + err.message,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -268,5 +285,31 @@ export class UserService {
     await followUser.save();
 
     return true;
+  }
+
+  async toggleWishList(userId: string, productId: string): Promise<User> {
+    const user = await this.UserModel.findById(userId);
+    const product = await this.productService.findById(productId);
+    const productIndex = user.wishList.findIndex(
+      (item) => item._id.toString() === product._id.toString(),
+    );
+    if (productIndex === -1) {
+      user.wishList.push(product);
+    } else {
+      console.log('remove');
+      user.wishList.splice(productIndex, 1);
+    }
+    await user.save();
+    return user;
+  }
+
+  async findUserWishList(userId: string): Promise<User> {
+    const user = this.UserModel.findById(userId)
+      .select('wishList')
+      .populate({
+        path: 'wishList',
+        populate: { path: 'owner', select: 'username reviewStar' },
+      });
+    return user;
   }
 }
