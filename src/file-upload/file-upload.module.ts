@@ -1,13 +1,17 @@
 import { Module } from '@nestjs/common';
-import { FileUploadService } from './file-upload.service';
-import { FileUploadController } from './file-upload.controller';
-import { MinioClientModule } from 'src/minio-client/minio-client.module';
+import { UploadController } from './file-upload.controller';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
-  imports: [
-    MinioClientModule
-  ],
-  providers: [FileUploadService],
-  controllers: [FileUploadController]
-})
-export class FileUploadModule {}
+    imports: [
+        MulterModule.register({
+            dest: './files',
+          }),
+    ],
+
+    controllers: [UploadController],
+
+  })
+
+
+export class UploadModule {}
