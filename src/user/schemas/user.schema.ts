@@ -32,7 +32,7 @@ export class User {
   phone: string;
 
   @ApiProperty()
-  @Prop()
+  @Prop({ default: '' })
   description: string;
 
   @ApiProperty()
@@ -72,7 +72,7 @@ export class User {
   chatRooms: Room[];
 
   @ApiProperty()
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Address'})
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Address' })
   mainAddress: Address;
 }
 export const UserSchema = SchemaFactory.createForClass(User);

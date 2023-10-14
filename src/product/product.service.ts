@@ -41,7 +41,10 @@ export class ProductService {
   }
 
   async findAllByOwnerId(userId: string): Promise<Product[]> {
-    const products = await this.ProductModel.find({ owner: userId });
+    const products = await this.ProductModel.find({ owner: userId }).populate({
+      path: 'owner',
+      select: 'username reviewStar',
+    });
     return products;
   }
 

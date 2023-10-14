@@ -168,7 +168,7 @@ export class UserController {
     description: 'Add product to wishlist successfully',
   })
   @ApiBadRequestResponse({
-    description: 'Can not add product to wishlist, try again.',
+    description: 'Can not add product to wishlist, try again',
   })
   @ApiSecurity('JWT-auth')
   @Put('add-user-wishlist/:productId')
