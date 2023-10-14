@@ -60,6 +60,7 @@ export class ChatGateway {
         return this.server.to(socket.id).emit('rooms', rooms);
       }
     } catch {
+      console.log('...not connect');
       return this.disconnect(socket);
     }
   }
@@ -88,13 +89,23 @@ export class ChatGateway {
     const alreadyRoom = await this.roomService.findByProduct(room.product);
     if (!alreadyRoom) {
       const newRoom = await this.roomService.createRoom(room, socket.data.user);
-      return this.server.to(socket.id).emit('roomId', newRoom._id);
+      const getNewRoom = await this.roomService.getRoom(
+        newRoom._id.toString(),
+        socket.data.user,
+      );
+      return this.server.to(socket.id).emit('roomId', getNewRoom);
     }
-    return this.server.to(socket.id).emit('roomId', alreadyRoom._id);
+    const getRoom = await this.roomService.getRoom(
+      alreadyRoom._id.toString(),
+      socket.data.user,
+    );
+
+    return this.server.to(socket.id).emit('roomId', getRoom);
   }
 
   @SubscribeMessage('joinRoom')
   async onJoinRoom(socket: Socket, roomId: string) {
+    this.messageService.updateOtherUserRead(roomId, socket.data.user);
     const messages = await this.messageService.findMessageForRoom(roomId);
     const room = await this.roomService.findById(roomId);
     await this.joinedRoomService.create({
@@ -113,12 +124,6 @@ export class ChatGateway {
     this.server.to(socket.id).emit('messages', newMessage);
   }
 
-  @SubscribeMessage('getRoom')
-  async onGetRoom(socket: Socket, roomId: string) {
-    const room = await this.roomService.getRoom(roomId, socket.data.user);
-    this.server.to(socket.id).emit('room', room);
-  }
-
   @SubscribeMessage('getRooms')
   async onGetRooms(socket: Socket) {
     const rooms = await this.roomService.getRoomsForUser(socket.data.user);
@@ -134,14 +139,15 @@ export class ChatGateway {
   async onAddMessage(socket: Socket, message: any) {
     const roomId = message.roomId;
     const newMessage = message.message;
-    const room: Room = await this.roomService.findById(roomId);
+    const room = await this.roomService.findById(roomId);
+    const joinedUsers = await this.joinedRoomService.findByRoom(room);
+    console.log(joinedUsers.length);
     const createMessage = await this.messageService.create({
       ...newMessage,
       user: socket.data.user,
       room: room,
+      otherUserRead: joinedUsers.length === 1 ? false : true,
     });
-    console.log(createMessage);
-    const joinedUsers = await this.joinedRoomService.findByRoom(room);
     for (const user of joinedUsers) {
       const newMessage: getMessageDto = {
         text: createMessage.text,

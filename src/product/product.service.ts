@@ -50,7 +50,7 @@ export class ProductService {
     return user;
   }
 
-  async findInfoProductPage(productId: string): Promise<any> {
+  async findInfoProductPage(productId: string, userId: string): Promise<any> {
     try {
       const product = await this.ProductModel.findById(productId);
       const newProduct = await this.ProductModel.findOneAndUpdate(
@@ -67,6 +67,8 @@ export class ProductService {
       const result = new getInfoProductPageDto();
       result.product = newProduct;
       result.productsOfUser = productsOfUser;
+      result.isUserProduct =
+        userId.toString() === newProduct.owner._id.toString() ? true : false;
       return result;
     } catch (err) {
       throw new HttpException(
@@ -96,10 +98,10 @@ export class ProductService {
     try {
       const newProduct = await this.ProductModel.findOneAndUpdate(
         { _id: product.productId, owner: ownerId },
-        { $set: product }, 
-        { new: true, runValidators: true }
+        { $set: product },
+        { new: true, runValidators: true },
       );
-      if(!newProduct){
+      if (!newProduct) {
         throw new HttpException('Product not found.', HttpStatus.NOT_FOUND);
       }
       return newProduct;

@@ -22,6 +22,11 @@ export class Message {
   })
   room: Room;
 
+  @Prop({
+    default: false,
+  })
+  otherUserRead: boolean;
+
   createdAt: Date;
 }
 

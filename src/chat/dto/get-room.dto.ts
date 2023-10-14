@@ -1,5 +1,6 @@
 import { Product } from 'src/product/schemas/product.schema';
 import { User } from 'src/user/schemas/user.schema';
+import { Message } from '../schemas/message.schema';
 
 export class getRoomDto {
   id: string;
@@ -7,7 +8,8 @@ export class getRoomDto {
   product: Product;
   user: userRole;
   otherUser: userRole;
-  messages: [];
+  lastMessage: Message;
+  isRead: boolean;
 }
 
 class userRole {
