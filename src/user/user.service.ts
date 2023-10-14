@@ -31,6 +31,7 @@ export class UserService {
   }
 
   async findUserPageById(userId: string) {
+    console.log('service');
     try {
       const user = await this.UserModel.findById(userId);
       console.log(user);

@@ -48,6 +48,7 @@ export class UserController {
   @ApiSecurity('JWT-auth')
   @Get('get-user-page-by-id')
   async getUserById(@Req() req: any) {
+    console.log('req', req.userId);
     return await this.userService.findUserPageById(req.userId);
   }
 
