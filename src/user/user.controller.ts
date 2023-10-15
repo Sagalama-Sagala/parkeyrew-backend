@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Get,
@@ -8,6 +7,8 @@ import {
   Post,
   Put,
   Req,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './schemas/user.schema';
@@ -23,6 +24,8 @@ import {
 } from '@nestjs/swagger';
 import { updateUserPasswordDto } from './dto/update-user-password.dto';
 import { setMainAddressDto } from './dto/set-main-address.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { BufferedFile } from 'src/minio-client/file.model';
 
 @ApiTags('User')
 @Controller('user')
@@ -162,8 +165,11 @@ export class UserController {
     description: 'Cannot set main address',
   })
   @Post('set-main-address')
-  async setMainAddress(@Req() req: any, @Body() address: setMainAddressDto): Promise<any> {
-    return await this.userService.setMainAddress(address.addressId,req.userId);
+  async setMainAddress(
+    @Req() req: any,
+    @Body() address: setMainAddressDto,
+  ): Promise<any> {
+    return await this.userService.setMainAddress(address.addressId, req.userId);
   }
 
   @ApiOkResponse({
@@ -194,5 +200,15 @@ export class UserController {
     console.log(req.userId);
     const result = this.userService.toggleWishList(req.userId, produtcId);
     return result;
+  }
+
+  @Put('edit-profile-image')
+  @UseInterceptors(FileInterceptor('image'))
+  async editProfileImage(
+    @Req() req: any,
+    @UploadedFile() image: BufferedFile,
+  ): Promise<User> {
+    const user = this.userService.editImageUrl(req.userId, image);
+    return user;
   }
 }

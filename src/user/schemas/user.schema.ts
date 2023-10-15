@@ -74,5 +74,9 @@ export class User {
   @ApiProperty()
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Address' })
   mainAddress: Address;
+
+  @ApiProperty()
+  @Prop({ default: '' })
+  profileImage: string;
 }
 export const UserSchema = SchemaFactory.createForClass(User);

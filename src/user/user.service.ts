@@ -16,6 +16,8 @@ import * as bcrypt from 'bcrypt';
 import { Room } from 'src/chat/schemas/room.schema';
 import { updateUserPasswordDto } from './dto/update-user-password.dto';
 import { AddressService } from 'src/address/address.service';
+import { BufferedFile } from 'src/minio-client/file.model';
+import { FileUploadService } from 'src/file-upload/file-upload.service';
 
 @Injectable()
 export class UserService {
@@ -26,6 +28,7 @@ export class UserService {
     private readonly productService: ProductService,
     @Inject(forwardRef(() => AddressService))
     private readonly addressService: AddressService,
+    private readonly fileUploadService: FileUploadService,
   ) {}
 
   async findAll(): Promise<User[]> {
@@ -34,7 +37,7 @@ export class UserService {
 
   async findUserPageById(userId: string) {
     try {
-      const user = await this.UserModel.findById(userId).populate('follower');
+      const user = await this.UserModel.findById(userId);
       if (!user) {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
@@ -321,6 +324,14 @@ export class UserService {
         path: 'wishList',
         populate: { path: 'owner', select: 'username reviewStar' },
       });
+    return user;
+  }
+
+  async editImageUrl(userId: string, image: BufferedFile): Promise<User> {
+    const user = await this.UserModel.findById(userId);
+    const imageUrl = await this.fileUploadService.uploadSingle(image);
+    user.profileImage = imageUrl;
+    await user.save();
     return user;
   }
 }
