@@ -125,8 +125,6 @@ export class ProductService {
      
   }
 
-
-
   async update(ownerId: string, product: updateProductDto): Promise<Product> {
     try {
       const newProduct = await this.ProductModel.findOneAndUpdate(
