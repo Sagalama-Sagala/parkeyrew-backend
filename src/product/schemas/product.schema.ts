@@ -67,6 +67,10 @@ export class Product {
   @ApiProperty()
   @Prop({ default: 0 })
   likeCount: number;
+
+  @ApiProperty()
+  @Prop({ default: [] })
+  prouctImage: string[];
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

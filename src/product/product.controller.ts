@@ -101,10 +101,12 @@ export class ProductController {
     return await this.productService.update(req.userId, productInfo);
   }
 
-  @ApiOkResponse({
-  })
+  @ApiOkResponse({})
   @Post('decrease-product-count')
-  async decreaseProductCount(@Req() req: any, @Body() body: decreaseProductCountDto): Promise<Product>{
+  async decreaseProductCount(
+    @Req() req: any,
+    @Body() body: decreaseProductCountDto,
+  ): Promise<Product> {
     return await this.productService.decreaseProductCount(req.user, body);
   }
 }
