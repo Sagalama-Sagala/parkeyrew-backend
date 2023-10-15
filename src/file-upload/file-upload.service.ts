@@ -32,9 +32,7 @@ export class FileUploadService {
       };
     }
 
-    return {
-      ...uploadedImageUrls,
-      message: 'Successfully uploaded multiple images on MinioS3',
-    };
+    return uploadedImageUrls
+    
   }
 }

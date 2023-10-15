@@ -70,7 +70,7 @@ export class Product {
 
   @ApiProperty()
   @Prop({ default: [] })
-  prouctImage: string[];
+  productImage: string[];
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

@@ -58,7 +58,4 @@ export class createProductDto {
   @IsNotEmpty()
   @IsPositive()
   readonly remain: number;
-
-  @ApiProperty()
-  readonly productImage: BufferedFile;
 }
