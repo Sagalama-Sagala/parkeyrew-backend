@@ -62,7 +62,7 @@ export class ProductController {
   @ApiSecurity('JWT-auth')
   @Get('get-info-product-page/:id')
   async getInfoProductPage(
-    @Req() req,
+    @Req() req: any,
     @Param('id') id: string,
   ): Promise<getInfoProductPageDto> {
     return await this.productService.findInfoProductPage(id, req.userId);
