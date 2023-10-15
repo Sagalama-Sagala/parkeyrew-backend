@@ -110,11 +110,13 @@ export class ProductService {
   async addProductImage(productId: string, images: {[key: string]: BufferedFile[] }){
     const product = await this.ProductModel.findById(productId);
     const imageUrl = await this.fileUploadService.uploadMany(images);
-    // product.productImage=imageUrl;
-    // await user.save();
-    // return user;
+    product.productImage=imageUrl;
+    await product.save();
+    return product;
      
   }
+
+
 
   async update(ownerId: string, product: updateProductDto): Promise<Product> {
     try {

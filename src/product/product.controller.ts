@@ -1,4 +1,14 @@
-import { Body, Controller, Get, Param, Post, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Req,
+  UseInterceptors,
+  Put,
+  UploadedFile,
+} from '@nestjs/common';
 import { Product } from './schemas/product.schema';
 import {
   ApiBadRequestResponse,
@@ -14,6 +24,8 @@ import { getInfoProductPageDto } from './dto/get-info-product-page.dto';
 import { updateProductDto } from './dto/update-product.dto';
 import { ProductService } from './product.service';
 import { decreaseProductCountDto } from './dto/decrease-product-count.dto';
+import { BufferedFile } from 'src/minio-client/file.model';
+import { FileFieldsInterceptor} from '@nestjs/platform-express';
 
 @ApiTags('Product')
 @Controller('product')
@@ -108,5 +120,24 @@ export class ProductController {
     @Body() body: decreaseProductCountDto,
   ): Promise<Product> {
     return await this.productService.decreaseProductCount(req.user, body);
+  }
+
+  @ApiSecurity('JWT-auth')
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'image1', maxCount: 1 },
+      { name: 'image2', maxCount: 1 },
+      { name: 'image3', maxCount: 1 },
+      { name: 'image4', maxCount: 1 },
+      { name: 'image5', maxCount: 1 },
+    ]),
+  )
+  @Put('add-product-image')
+  async addProductImage(
+    @Req() req: any,
+    @UploadedFile() images: {[key: string]: BufferedFile[] },
+  ): Promise<Product> {
+    const product = this.productService.addProductImage(req.productId, images);
+    return product;
   }
 }
