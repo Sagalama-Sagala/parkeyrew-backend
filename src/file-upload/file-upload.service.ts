@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { MinioClientService } from 'src/minio-client/minio-client.service';
 import { BufferedFile } from 'src/minio-client/file.model';
-
+import { HttpException,HttpStatus } from '@nestjs/common';
 @Injectable()
 export class FileUploadService {
   constructor(private minioClientService: MinioClientService) {}
@@ -13,42 +13,28 @@ export class FileUploadService {
     return uploaded_image.url.toString();
   }
 
-  // async uploadMany(files: BufferedFile) {
-  //   let image1 = files['image1'][0];
-  //   let uploaded_image1 = await this.minioClientService.upload(image1);
-  //
-  //   let image2 = files['image2'][0];
-  //   let uploaded_image2 = await this.minioClientService.upload(image2);
-  //
-  //   return {
-  //     image1_url: uploaded_image1.url,
-  //     image2_url: uploaded_image2.url,
-  //     message: 'Successfully uploaded mutiple image on MinioS3',
-  //   };
-  // }
-
-  async uploadMany(files: { [key: string]: BufferedFile[] }) {
-    const uploadedImageUrls = {};
+  async uploadMany(images: { [key: string]: BufferedFile[] }): Promise<string[]> {
+    const uploadedImageUrls = [];
 
     for (let i = 1; i <= 5; i++) {
       const fieldName = `image${i}`;
 
-      if (files[fieldName] && files[fieldName].length > 0) {
-        const image = files[fieldName][0];
+      if (images[fieldName] && images[fieldName].length > 0) {
+        const image = images[fieldName][0];
         const uploadedImage = await this.minioClientService.upload(image);
-        uploadedImageUrls[`${fieldName}_url`] = uploadedImage.url;
+        uploadedImageUrls.push(uploadedImage.url);
       }
     }
 
     if (Object.keys(uploadedImageUrls).length === 0) {
-      return {
-        message: 'No images were uploaded.',
-      };
+      
+      throw new HttpException(
+        'No image',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
 
-    return {
-      ...uploadedImageUrls,
-      message: 'Successfully uploaded multiple images on MinioS3',
-    };
+    return uploadedImageUrls
+    
   }
 }

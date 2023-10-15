@@ -15,6 +15,7 @@ import { updateProductDto } from './dto/update-product.dto';
 import { decreaseProductCountDto } from './dto/decrease-product-count.dto';
 import { HistoryService } from 'src/history/history.service';
 import { BufferedFile } from 'src/minio-client/file.model';
+import { FileUploadService } from 'src/file-upload/file-upload.service';
 
 @Injectable()
 export class ProductService {
@@ -24,6 +25,7 @@ export class ProductService {
     @Inject(forwardRef(() => UserService))
     private userService: UserService,
     private readonly historyService: HistoryService,
+    private readonly fileUploadService: FileUploadService,
   ) {}
 
   async findAll(): Promise<Product[]> {
@@ -104,6 +106,26 @@ export class ProductService {
       );
     }
   }
+
+  async addProductImage(productId: string, images: {[key: string]: BufferedFile[] }){
+    console.log(1);
+    const product = await this.ProductModel.findById(productId);
+    console.log(2);
+    const imageUrl = await this.fileUploadService.uploadMany(images);
+    console.log(3);
+    product.productImage=[];
+    for(const item of imageUrl){
+      console.log(item)
+      product.productImage.push(item)
+      console.log(product.productImage)
+    }
+    console.log(4);
+    await product.save();
+    return product;
+     
+  }
+
+
 
   async update(ownerId: string, product: updateProductDto): Promise<Product> {
     try {
