@@ -202,8 +202,15 @@ export class UserController {
     return result;
   }
 
-  @Put('edit-profile-image')
+  @ApiOkResponse({
+    description: 'add image successfully',
+  })
+  @ApiBadRequestResponse({
+    description: 'add image fail try again',
+  })
+  @ApiSecurity('JWT-auth')
   @UseInterceptors(FileInterceptor('image'))
+  @Post('edit-profile-image')
   async editProfileImage(
     @Req() req: any,
     @UploadedFile() image: BufferedFile,
