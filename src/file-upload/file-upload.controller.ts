@@ -29,7 +29,7 @@ export class FileUploadController {
       { name: 'image2', maxCount: 1 },
     ]),
   )
-  async uploadMany(@UploadedFiles() files: BufferedFile) {
+  async uploadMany(@UploadedFiles() files: { [key: string]: BufferedFile[] }) {
     return this.fileUploadService.uploadMany(files);
   }
 }

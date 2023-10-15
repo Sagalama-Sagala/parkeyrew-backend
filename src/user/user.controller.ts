@@ -210,7 +210,7 @@ export class UserController {
   })
   @ApiSecurity('JWT-auth')
   @UseInterceptors(FileInterceptor('image'))
-  @Post('edit-profile-image')
+  @Put('edit-profile-image')
   async editProfileImage(
     @Req() req: any,
     @UploadedFile() image: BufferedFile,
