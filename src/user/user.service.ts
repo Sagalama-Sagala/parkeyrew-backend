@@ -33,10 +33,11 @@ export class UserService {
   }
 
   async findUserPageById(userId: string) {
-    console.log('service');
     try {
-      const user = await this.UserModel.findById(userId);
-      console.log(user);
+      const user = await this.UserModel.findById(userId).populate({
+        path: 'follower following',
+        select: 'username',
+      });
       if (!user) {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
@@ -219,11 +220,14 @@ export class UserService {
   async setMainAddress(addressId: string, userId: string): Promise<any> {
     try {
       const address = await this.addressService.findById(addressId);
-      if(!address){
+      if (!address) {
         throw new HttpException('Address not found', 404);
       }
-      if(address.owner._id.toString() != userId){
-        throw new HttpException('This address is not owned by this user: '+userId,400);
+      if (address.owner._id.toString() != userId) {
+        throw new HttpException(
+          'This address is not owned by this user: ' + userId,
+          400,
+        );
       }
       return await this.UserModel.findOneAndUpdate(
         { _id: userId },
