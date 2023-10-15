@@ -123,6 +123,8 @@ export class ProductController {
   }
 
   @ApiSecurity('JWT-auth')
+  
+  @Put('add-product-image')
   @UseInterceptors(
     FileFieldsInterceptor([
       { name: 'image1', maxCount: 1 },
@@ -132,7 +134,6 @@ export class ProductController {
       { name: 'image5', maxCount: 1 },
     ]),
   )
-  @Put('add-product-image')
   async addProductImage(
     @Req() req: any,
     @UploadedFile() images: {[key: string]: BufferedFile[] },
