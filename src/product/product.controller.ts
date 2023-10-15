@@ -8,6 +8,7 @@ import {
   UseInterceptors,
   Put,
   UploadedFile,
+  UploadedFiles,
 } from '@nestjs/common';
 import { Product } from './schemas/product.schema';
 import {
@@ -136,7 +137,7 @@ export class ProductController {
   )
   async addProductImage(
     @Req() req: any,
-    @UploadedFile() images: {[key: string]: BufferedFile[] },
+    @UploadedFiles() images: {[key: string]: BufferedFile[] },
   ): Promise<Product> {
     const product = this.productService.addProductImage(req.productId, images);
     return product;
