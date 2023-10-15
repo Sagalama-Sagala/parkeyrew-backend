@@ -124,7 +124,7 @@ export class ProductController {
   }
 
   @ApiSecurity('JWT-auth')
-  @Put('add-product-image')
+  @Put('add-product-image/:productId')
   @UseInterceptors(
     FileFieldsInterceptor([
       { name: 'image1', maxCount: 1 },
@@ -135,10 +135,11 @@ export class ProductController {
     ]),
   )
   async addProductImage(
-    @Req() req: any,
+    @Param() productId: string,   
     @UploadedFiles() images: { [key: string]: BufferedFile[] },
+  
   ): Promise<Product> {
-    const product = this.productService.addProductImage(req.productId, images);
+    const product = this.productService.addProductImage(productId, images);
     return product;
   }
 }
