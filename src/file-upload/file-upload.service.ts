@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { MinioClientService } from 'src/minio-client/minio-client.service';
 import { BufferedFile } from 'src/minio-client/file.model';
-
+import { HttpException,HttpStatus } from '@nestjs/common';
 @Injectable()
 export class FileUploadService {
   constructor(private minioClientService: MinioClientService) {}
@@ -13,7 +13,7 @@ export class FileUploadService {
     return uploaded_image.url.toString();
   }
 
-  async uploadMany(images: { [key: string]: BufferedFile[] }) {
+  async uploadMany(images: { [key: string]: BufferedFile[] }): Promise<string[]> {
     const uploadedImageUrls = [];
 
     for (let i = 1; i <= 5; i++) {
@@ -27,9 +27,11 @@ export class FileUploadService {
     }
 
     if (Object.keys(uploadedImageUrls).length === 0) {
-      return {
-        message: 'No images were uploaded.',
-      };
+      
+      throw new HttpException(
+        'No image',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
 
     return uploadedImageUrls
