@@ -135,7 +135,7 @@ export class ProductController {
     ]),
   )
   async addProductImage(
-    @Param() productId: string,   
+    @Param('productId') productId: string,   
     @UploadedFiles() images: { [key: string]: BufferedFile[] },
   
   ): Promise<Product> {
