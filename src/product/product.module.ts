@@ -10,7 +10,7 @@ import { HistoryModule } from 'src/history/history.module';
   imports: [
     MongooseModule.forFeature([{ name: 'Product', schema: ProductSchema }]),
     forwardRef(() => UserModule),
-    HistoryModule
+    HistoryModule,
   ],
   controllers: [ProductController],
   providers: [ProductService],
