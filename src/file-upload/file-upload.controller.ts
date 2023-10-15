@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import {
   FileInterceptor,
-  FileFieldsInterceptor,
+  FilesInterceptor,
 } from '@nestjs/platform-express';
 import { FileUploadService } from './file-upload.service';
 import { BufferedFile } from 'src/minio-client/file.model';
@@ -23,13 +23,9 @@ export class FileUploadController {
   }
 
   @Post('many')
-  @UseInterceptors(
-    FileFieldsInterceptor([
-      { name: 'image1', maxCount: 1 },
-      { name: 'image2', maxCount: 1 },
-    ]),
-  )
-  async uploadMany(@UploadedFiles() files: { [key: string]: BufferedFile[] }) {
-    return this.fileUploadService.uploadMany(files);
+  @UseInterceptors(FilesInterceptor('images', 5))
+  async uploadMultipleFiles(@UploadedFiles() images: { [key: string]: BufferedFile[] }) {
+    const uploadedImagesResponse = await this.fileUploadService.uploadMany(images);
+    return uploadedImagesResponse;
   }
 }
