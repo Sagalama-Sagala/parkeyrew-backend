@@ -130,6 +130,22 @@ export class ChatGateway {
     this.server.to(socket.id).emit('rooms', rooms);
   }
 
+  @SubscribeMessage('getSellerRooms')
+  async onGetSellerRooms(socket: Socket) {
+    const rooms = await this.roomService.getRoomSellerForUsers(
+      socket.data.user,
+    );
+    this.server.to(socket.id).emit('rooms', rooms);
+  }
+
+  @SubscribeMessage('getCustomerRooms')
+  async onGetCustomerRooms(socket: Socket) {
+    const rooms = await this.roomService.getRoomCustomerForUsers(
+      socket.data.user,
+    );
+    this.server.to(socket.id).emit('rooms', rooms);
+  }
+
   @SubscribeMessage('leaveRoom')
   async onLeaveRoom(socket: Socket) {
     await this.joinedRoomService.deleteBySocketId(socket.id);

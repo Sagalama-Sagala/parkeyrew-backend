@@ -21,6 +21,7 @@ export class AuthMiddleware implements NestMiddleware {
   ) {}
 
   async use(req: Request, res: Response, next: NextFunction) {
+    console.log('middleware');
     try {
       const tokenArray: string[] = req.headers['authorization'].split(' ');
       const decodedToken = await this.authService.verifyJwt(tokenArray[1]);

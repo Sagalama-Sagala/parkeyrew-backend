@@ -13,8 +13,10 @@ import { ChatModule } from './chat/chat.module';
 import { AuthMiddleware } from './middleware/auth.middleware';
 import { ReviewModule } from './review/review.module';
 import { AddressModule } from './address/address.module';
-import { UploadModule } from './file-upload/file-upload.module';
-import { MulterModule } from '@nestjs/platform-express';
+import { HistoryModule } from './history/history.module';
+import { FileUploadModule } from './file-upload/file-upload.module';
+import { MinioClientModule } from './minio-client/minio-client.module';
+
 
 @Module({
   imports: [
@@ -26,7 +28,9 @@ import { MulterModule } from '@nestjs/platform-express';
     ChatModule,
     ReviewModule,
     AddressModule,
-    UploadModule
+    HistoryModule,
+    FileUploadModule,
+    MinioClientModule
   ],
 })
 export class AppModule implements NestModule {

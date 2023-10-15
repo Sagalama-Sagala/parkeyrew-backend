@@ -13,6 +13,7 @@ import { createProductDto } from './dto/create-product.dto';
 import { getInfoProductPageDto } from './dto/get-info-product-page.dto';
 import { updateProductDto } from './dto/update-product.dto';
 import { ProductService } from './product.service';
+import { decreaseProductCountDto } from './dto/decrease-product-count.dto';
 
 @ApiTags('Product')
 @Controller('product')
@@ -98,5 +99,12 @@ export class ProductController {
     @Body() productInfo: updateProductDto,
   ): Promise<Product> {
     return await this.productService.update(req.userId, productInfo);
+  }
+
+  @ApiOkResponse({
+  })
+  @Post('decrease-product-count')
+  async decreaseProductCount(@Req() req: any, @Body() body: decreaseProductCountDto): Promise<Product>{
+    return await this.productService.decreaseProductCount(req.user, body);
   }
 }
