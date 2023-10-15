@@ -14,8 +14,9 @@ import { AuthMiddleware } from './middleware/auth.middleware';
 import { ReviewModule } from './review/review.module';
 import { AddressModule } from './address/address.module';
 import { HistoryModule } from './history/history.module';
-import { UploadModule } from './file-upload/file-upload.module';
-import { MulterModule } from '@nestjs/platform-express';
+import { FileUploadModule } from './file-upload/file-upload.module';
+import { MinioClientModule } from './minio-client/minio-client.module';
+
 
 @Module({
   imports: [
@@ -28,7 +29,8 @@ import { MulterModule } from '@nestjs/platform-express';
     ReviewModule,
     AddressModule,
     HistoryModule,
-    UploadModule
+    FileUploadModule,
+    MinioClientModule
   ],
 })
 export class AppModule implements NestModule {

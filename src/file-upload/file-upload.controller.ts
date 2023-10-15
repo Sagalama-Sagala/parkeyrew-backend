@@ -1,61 +1,30 @@
-import {
-  Controller,
-  Get,
-  Post,
-  UseInterceptors,
-  UploadedFile,
-  UploadedFiles,
-  Res,
-  Param,
-} from '@nestjs/common';
-import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { editFileName, imageFileFilter } from './utils/file-upload.utils';
+import { Controller, Post, UseInterceptors, UploadedFile, UploadedFiles } from '@nestjs/common';
+import { FileInterceptor, FileFieldsInterceptor } from '@nestjs/platform-express'
+import { FileUploadService } from './file-upload.service';
+import { BufferedFile } from 'src/minio-client/file.model';
 
-@Controller('uploads')
-export class UploadController {
-  @Post('upload')
-  @UseInterceptors(
-    FileInterceptor('image', {
-      storage: diskStorage({
-        destination: './files',
-        filename: editFileName,
-      }),
-      fileFilter: imageFileFilter,
-    }),
-  )
-  async uploadedFile(@UploadedFile() file) {
-    const response = {
-      originalname: file.originalname,
-      filename: file.filename,
-    };
-    return response;
+@Controller('file-upload')
+export class FileUploadController {
+  constructor(
+    private fileUploadService: FileUploadService
+  ) {}
+
+  @Post('single')
+  @UseInterceptors(FileInterceptor('image'))
+  async uploadSingle(
+    @UploadedFile() image: BufferedFile
+  ) {
+    return await this.fileUploadService.uploadSingle(image)
   }
 
-  @Post('multiple')
-  @UseInterceptors(
-    FilesInterceptor('image', 20, {
-      storage: diskStorage({
-        destination: './files',
-        filename: editFileName,
-      }),
-      fileFilter: imageFileFilter,
-    }),
-  )
-  async uploadMultipleFiles(@UploadedFiles() files) {
-    const response = [];
-    files.forEach(file => {
-      const fileReponse = {
-        originalname: file.originalname,
-        filename: file.filename,
-      };
-      response.push(fileReponse);
-    });
-    return response;
-  }
-
-  @Get(':imgpath')
-  seeUploadedFile(@Param('imgpath') image, @Res() res) {
-    return res.sendFile(image, { root: './files' });
+  @Post('many')
+  @UseInterceptors(FileFieldsInterceptor([
+    { name: 'image1', maxCount: 1 },
+    { name: 'image2', maxCount: 1 },
+  ]))
+  async uploadMany(
+    @UploadedFiles() files: BufferedFile,
+  ) {
+    return this.fileUploadService.uploadMany(files)
   }
 }
