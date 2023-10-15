@@ -113,7 +113,9 @@ export class ProductService {
     console.log(2);
     const imageUrl = await this.fileUploadService.uploadMany(images);
     console.log(3);
-    product.productImage=imageUrl;
+    for(const item of imageUrl){
+      product.productImage.push(item)
+    }
     console.log(4);
     await product.save();
     return product;

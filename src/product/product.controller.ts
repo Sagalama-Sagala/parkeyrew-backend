@@ -138,7 +138,6 @@ export class ProductController {
     @Req() req: any,
     @UploadedFiles() images: { [key: string]: BufferedFile[] },
   ): Promise<Product> {
-    console.log("con")
     const product = this.productService.addProductImage(req.productId, images);
     return product;
   }
