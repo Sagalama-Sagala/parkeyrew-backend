@@ -108,9 +108,13 @@ export class ProductService {
   }
 
   async addProductImage(productId: string, images: {[key: string]: BufferedFile[] }){
+    console.log(1);
     const product = await this.ProductModel.findById(productId);
+    console.log(2);
     const imageUrl = await this.fileUploadService.uploadMany(images);
+    console.log(3);
     product.productImage=imageUrl;
+    console.log(4);
     await product.save();
     return product;
      
