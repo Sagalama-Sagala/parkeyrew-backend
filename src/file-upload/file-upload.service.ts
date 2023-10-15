@@ -14,7 +14,7 @@ export class FileUploadService {
   }
 
   async uploadMany(images: { [key: string]: BufferedFile[] }) {
-    const uploadedImageUrls = {};
+    const uploadedImageUrls = [];
 
     for (let i = 1; i <= 5; i++) {
       const fieldName = `image${i}`;
@@ -22,7 +22,7 @@ export class FileUploadService {
       if (images[fieldName] && images[fieldName].length > 0) {
         const image = images[fieldName][0];
         const uploadedImage = await this.minioClientService.upload(image);
-        uploadedImageUrls[`${fieldName}_url`] = uploadedImage.url;
+        uploadedImageUrls.push(uploadedImage.url);
       }
     }
 
