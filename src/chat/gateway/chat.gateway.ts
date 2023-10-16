@@ -162,7 +162,6 @@ export class ChatGateway {
     const newMessage = message.message;
     const room = await this.roomService.findById(roomId);
     const joinedUsers = await this.joinedRoomService.findByRoom(room);
-    console.log(joinedUsers.length);
     const createMessage = await this.messageService.create({
       ...newMessage,
       user: socket.data.user,
@@ -179,6 +178,27 @@ export class ChatGateway {
             : false,
       };
       this.server.to(user.socketId).emit('message', newMessage);
+      if (joinedUsers.length === 1) {
+        if (user.user._id.toString() === room.seller._id.toString()) {
+          const connectedUser = await this.connectedUserService.findByUser(
+            room.customer,
+          );
+          this.server.to(connectedUser.socketId).emit('notiMessage', {
+            username: socket.data.username,
+            text: createMessage.text,
+            roomId: room._id.toString(),
+          });
+        } else {
+          const connectedUser = await this.connectedUserService.findByUser(
+            room.seller,
+          );
+          this.server.to(connectedUser.socketId).emit('notiMessage', {
+            username: socket.data.username,
+            text: createMessage.text,
+            roomId: room._id.toString(),
+          });
+        }
+      }
     }
   }
 }
