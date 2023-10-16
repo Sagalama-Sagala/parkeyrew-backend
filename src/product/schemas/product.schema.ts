@@ -3,6 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import mongoose from 'mongoose';
 import { User } from 'src/user/schemas/user.schema';
 import { Max, Min } from 'class-validator';
+import { string } from 'yargs';
 
 @Schema({
   timestamps: true,
@@ -67,6 +68,10 @@ export class Product {
   @ApiProperty()
   @Prop({ default: 0 })
   likeCount: number;
+
+  @ApiProperty()
+  @Prop({ default: [] })
+  productImage: string[];
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

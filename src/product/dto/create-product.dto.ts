@@ -1,11 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsNotEmpty,
-  IsPositive,
-  IsString,
-  Max,
-  Min,
-} from 'class-validator';
+import { IsNotEmpty, IsPositive, IsString, Max, Min } from 'class-validator';
+import { BufferedFile } from 'src/minio-client/file.model';
 
 export class createProductDto {
   @ApiProperty()

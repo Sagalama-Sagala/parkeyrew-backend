@@ -109,4 +109,62 @@ export class RoomService {
 
     return newRooms;
   }
+
+  async getRoomSellerForUsers(user: User): Promise<getRoomDto[]> {
+    const rooms = await this.RoomModel.find({ customer: user })
+      .populate({
+        path: 'seller',
+        select: 'username',
+      })
+      .populate({ path: 'customer', select: 'username' })
+      .populate({ path: 'product', select: 'name price' });
+    const newRooms: getRoomDto[] = [];
+    for (const room of rooms) {
+      const newRoom = new getRoomDto();
+      newRoom.user = {
+        role: 'customer',
+        user: room.customer,
+      };
+      newRoom.otherUser = {
+        role: 'seller',
+        user: room.seller,
+      };
+      newRoom.lastMessage = await this.messageService.findLastOne(
+        room._id.toString(),
+      );
+      newRoom.product = room.product;
+      newRoom.id = room._id.toString();
+      newRooms.push(newRoom);
+    }
+    return newRooms;
+  }
+
+  async getRoomCustomerForUsers(user: User): Promise<getRoomDto[]> {
+    const rooms = await this.RoomModel.find({ seller: user })
+      .populate({
+        path: 'customer',
+        select: 'username',
+      })
+      .populate({ path: 'customer', select: 'username' })
+      .populate({ path: 'product', select: 'name price' });
+    const newRooms: getRoomDto[] = [];
+    for (const room of rooms) {
+      const newRoom = new getRoomDto();
+      newRoom.user = {
+        role: 'seller',
+        user: room.seller,
+      };
+      newRoom.otherUser = {
+        role: 'customer',
+        user: room.customer,
+      };
+      newRoom.lastMessage = await this.messageService.findLastOne(
+        room._id.toString(),
+      );
+      newRoom.product = room.product;
+      newRoom.id = room._id.toString();
+      newRooms.push(newRoom);
+    }
+    return newRooms;
+  }
 }

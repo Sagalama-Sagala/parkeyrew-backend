@@ -14,6 +14,8 @@ import { getInfoProductPageDto } from './dto/get-info-product-page.dto';
 import { updateProductDto } from './dto/update-product.dto';
 import { decreaseProductCountDto } from './dto/decrease-product-count.dto';
 import { HistoryService } from 'src/history/history.service';
+import { BufferedFile } from 'src/minio-client/file.model';
+import { FileUploadService } from 'src/file-upload/file-upload.service';
 
 @Injectable()
 export class ProductService {
@@ -23,6 +25,7 @@ export class ProductService {
     @Inject(forwardRef(() => UserService))
     private userService: UserService,
     private readonly historyService: HistoryService,
+    private readonly fileUploadService: FileUploadService,
   ) {}
 
   async findAll(): Promise<Product[]> {
@@ -31,20 +34,23 @@ export class ProductService {
   }
 
   async find4Latest(): Promise<Product[]> {
-    return await this.ProductModel.find({ remain: { $ne: 0 }}).sort({ createdAt: -1 }).limit(4);
+    return await this.ProductModel.find({ remain: { $ne: 0 } })
+      .sort({ createdAt: -1 })
+      .limit(4);
   }
 
   async findByFilter(): Promise<Product[] | undefined> {
-    const products = await this.ProductModel
-      .find(
-        { remain: { $ne: 0 } },        
-      )
-      .sort({ createdAt: -1 });
+    const products = await this.ProductModel.find({ remain: { $ne: 0 } }).sort({
+      createdAt: -1,
+    });
     return products;
   }
 
   async findAllByOwnerId(userId: string): Promise<Product[]> {
-    const products = await this.ProductModel.find({ owner: userId, remain: { $ne: 0 } }).populate({
+    const products = await this.ProductModel.find({
+      owner: userId,
+      remain: { $ne: 0 },
+    }).populate({
       path: 'owner',
       select: 'username reviewStar',
     });
@@ -65,7 +71,8 @@ export class ProductService {
         { new: true, runValidators: true },
       ).populate({ path: 'owner', select: 'username reviewStar' });
       const productsOfUser = await this.ProductModel.find({
-        _id: { $ne: productId }, remain: { $ne: 0 }
+        _id: { $ne: productId },
+        remain: { $ne: 0 },
       })
         .populate({ path: 'owner', select: 'username reviewStar' })
         .sort({ createdAt: -1 })
@@ -100,6 +107,28 @@ export class ProductService {
     }
   }
 
+  async addProductImage(
+    productId: string,
+    images: { [key: string]: BufferedFile[] },
+  ) {
+    console.log(productId);
+    console.log(images);
+    console.log(1);
+    const product = await this.ProductModel.findById(productId);
+    console.log(2);
+    const imageUrl = await this.fileUploadService.uploadMany(images);
+    console.log(3);
+    product.productImage = [];
+    for (const item of imageUrl) {
+      console.log(item);
+      product.productImage.push(item);
+      console.log(product.productImage);
+    }
+    console.log(4);
+    await product.save();
+    return product;
+  }
+
   async update(ownerId: string, product: updateProductDto): Promise<Product> {
     try {
       const newProduct = await this.ProductModel.findOneAndUpdate(
@@ -128,16 +157,19 @@ export class ProductService {
     }
   }
 
-  async decreaseProductCount(shopId: string, body: decreaseProductCountDto): Promise<Product> {
-    try{
+  async decreaseProductCount(
+    shopId: string,
+    body: decreaseProductCountDto,
+  ): Promise<Product> {
+    try {
       const shop = await this.userService.findById(shopId);
       const customer = await this.userService.findById(body.customerId);
-      if(!shop || !customer) {
+      if (!shop || !customer) {
         throw new HttpException('User not found', 404);
       }
       const product = await this.ProductModel.findById(body.productId);
-      if(!product) { 
-        throw new HttpException('Product not found: '+body.productId, 404);
+      if (!product) {
+        throw new HttpException('Product not found: ' + body.productId, 404);
       }
       await this.historyService.create(product, shop, customer);
       return await this.ProductModel.findByIdAndUpdate(
@@ -145,9 +177,11 @@ export class ProductService {
         { $set: { remain: product.remain - 1 } },
         { new: true, runValidators: true },
       );
-    }
-    catch(err){
-      throw new HttpException('Error to decrease product count: ' + err.message, err.status);
+    } catch (err) {
+      throw new HttpException(
+        'Error to decrease product count: ' + err.message,
+        err.status,
+      );
     }
   }
 

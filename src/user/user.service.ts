@@ -16,6 +16,8 @@ import * as bcrypt from 'bcrypt';
 import { Room } from 'src/chat/schemas/room.schema';
 import { updateUserPasswordDto } from './dto/update-user-password.dto';
 import { AddressService } from 'src/address/address.service';
+import { BufferedFile } from 'src/minio-client/file.model';
+import { FileUploadService } from 'src/file-upload/file-upload.service';
 
 @Injectable()
 export class UserService {
@@ -26,6 +28,7 @@ export class UserService {
     private readonly productService: ProductService,
     @Inject(forwardRef(() => AddressService))
     private readonly addressService: AddressService,
+    private readonly fileUploadService: FileUploadService,
   ) {}
 
   async findAll(): Promise<User[]> {
@@ -35,7 +38,6 @@ export class UserService {
   async findUserPageById(userId: string) {
     try {
       const user = await this.UserModel.findById(userId);
-      console.log(user);
       if (!user) {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
@@ -218,11 +220,14 @@ export class UserService {
   async setMainAddress(addressId: string, userId: string): Promise<any> {
     try {
       const address = await this.addressService.findById(addressId);
-      if(!address){
+      if (!address) {
         throw new HttpException('Address not found', 404);
       }
-      if(address.owner._id.toString() != userId){
-        throw new HttpException('This address is not owned by this user: '+userId,400);
+      if (address.owner._id.toString() != userId) {
+        throw new HttpException(
+          'This address is not owned by this user: ' + userId,
+          400,
+        );
       }
       return await this.UserModel.findOneAndUpdate(
         { _id: userId },
@@ -319,6 +324,14 @@ export class UserService {
         path: 'wishList',
         populate: { path: 'owner', select: 'username reviewStar' },
       });
+    return user;
+  }
+
+  async editImageUrl(userId: string, image: BufferedFile): Promise<User> {
+    const user = await this.UserModel.findById(userId);
+    const imageUrl = await this.fileUploadService.uploadSingle(image);
+    user.profileImage = imageUrl;
+    await user.save();
     return user;
   }
 }

@@ -4,11 +4,15 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ProductSchema } from './schemas/product.schema';
 import { UserModule } from 'src/user/user.module';
 import { ProductService } from './product.service';
+import { HistoryModule } from 'src/history/history.module';
+import { FileUploadModule } from 'src/file-upload/file-upload.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: 'Product', schema: ProductSchema }]),
     forwardRef(() => UserModule),
+    HistoryModule,
+    FileUploadModule,
   ],
   controllers: [ProductController],
   providers: [ProductService],

@@ -1,4 +1,15 @@
-import { Body, Controller, Get, Param, Post, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Req,
+  UseInterceptors,
+  Put,
+  UploadedFile,
+  UploadedFiles,
+} from '@nestjs/common';
 import { Product } from './schemas/product.schema';
 import {
   ApiBadRequestResponse,
@@ -14,6 +25,8 @@ import { getInfoProductPageDto } from './dto/get-info-product-page.dto';
 import { updateProductDto } from './dto/update-product.dto';
 import { ProductService } from './product.service';
 import { decreaseProductCountDto } from './dto/decrease-product-count.dto';
+import { BufferedFile } from 'src/minio-client/file.model';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Product')
 @Controller('product')
@@ -62,7 +75,7 @@ export class ProductController {
   @ApiSecurity('JWT-auth')
   @Get('get-info-product-page/:id')
   async getInfoProductPage(
-    @Req() req,
+    @Req() req: any,
     @Param('id') id: string,
   ): Promise<getInfoProductPageDto> {
     return await this.productService.findInfoProductPage(id, req.userId);
@@ -101,10 +114,32 @@ export class ProductController {
     return await this.productService.update(req.userId, productInfo);
   }
 
-  @ApiOkResponse({
-  })
+  @ApiOkResponse({})
   @Post('decrease-product-count')
-  async decreaseProductCount(@Req() req: any, @Body() body: decreaseProductCountDto): Promise<Product>{
+  async decreaseProductCount(
+    @Req() req: any,
+    @Body() body: decreaseProductCountDto,
+  ): Promise<Product> {
     return await this.productService.decreaseProductCount(req.user, body);
+  }
+
+  @ApiSecurity('JWT-auth')
+  @Put('add-product-image/:productId')
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'image1', maxCount: 1 },
+      { name: 'image2', maxCount: 1 },
+      { name: 'image3', maxCount: 1 },
+      { name: 'image4', maxCount: 1 },
+      { name: 'image5', maxCount: 1 },
+    ]),
+  )
+  async addProductImage(
+    @Param('productId') productId: string,   
+    @UploadedFiles() images: { [key: string]: BufferedFile[] },
+  
+  ): Promise<Product> {
+    const product = this.productService.addProductImage(productId, images);
+    return product;
   }
 }

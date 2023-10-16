@@ -1,61 +1,38 @@
 import {
   Controller,
-  Get,
   Post,
   UseInterceptors,
   UploadedFile,
   UploadedFiles,
-  Res,
-  Param,
 } from '@nestjs/common';
-import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { editFileName, imageFileFilter } from './utils/file-upload.utils';
+import {
+  FileInterceptor,
+  FileFieldsInterceptor,
+} from '@nestjs/platform-express';
+import { FileUploadService } from './file-upload.service';
+import { BufferedFile } from 'src/minio-client/file.model';
 
-@Controller('uploads')
-export class UploadController {
-  @Post('upload')
-  @UseInterceptors(
-    FileInterceptor('image', {
-      storage: diskStorage({
-        destination: './files',
-        filename: editFileName,
-      }),
-      fileFilter: imageFileFilter,
-    }),
-  )
-  async uploadedFile(@UploadedFile() file) {
-    const response = {
-      originalname: file.originalname,
-      filename: file.filename,
-    };
-    return response;
+@Controller('file-upload')
+export class FileUploadController {
+  constructor(private fileUploadService: FileUploadService) {}
+
+  @Post('single')
+  @UseInterceptors(FileInterceptor('image'))
+  async uploadSingle(@UploadedFile() image: BufferedFile) {
+    return await this.fileUploadService.uploadSingle(image);
   }
 
-  @Post('multiple')
+  @Post('many')
   @UseInterceptors(
-    FilesInterceptor('image', 20, {
-      storage: diskStorage({
-        destination: './files',
-        filename: editFileName,
-      }),
-      fileFilter: imageFileFilter,
-    }),
+    FileFieldsInterceptor([
+      { name: 'image1', maxCount: 1 },
+      { name: 'image2', maxCount: 1 },
+      { name: 'image3', maxCount: 1 },
+      { name: 'image4', maxCount: 1 },
+      { name: 'image5', maxCount: 1 },
+    ]),
   )
-  async uploadMultipleFiles(@UploadedFiles() files) {
-    const response = [];
-    files.forEach(file => {
-      const fileReponse = {
-        originalname: file.originalname,
-        filename: file.filename,
-      };
-      response.push(fileReponse);
-    });
-    return response;
-  }
-
-  @Get(':imgpath')
-  seeUploadedFile(@Param('imgpath') image, @Res() res) {
-    return res.sendFile(image, { root: './files' });
+  async uploadMany(@UploadedFiles() files: { [key: string]: BufferedFile[] }) {
+    return this.fileUploadService.uploadMany(files);
   }
 }
