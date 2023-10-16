@@ -40,7 +40,7 @@ export class UserService {
     try {
       const user = await this.UserModel.findById(userId).populate({
         path: 'followerList followingList',
-        select: 'username',
+        select: 'username profileImage',
       });
       if (!user) {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
