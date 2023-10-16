@@ -18,6 +18,7 @@ import { updateUserPasswordDto } from './dto/update-user-password.dto';
 import { AddressService } from 'src/address/address.service';
 import { BufferedFile } from 'src/minio-client/file.model';
 import { FileUploadService } from 'src/file-upload/file-upload.service';
+import { getProfileAccountUser } from './dto/get-profile-account-user.dto';
 
 @Injectable()
 export class UserService {
@@ -72,7 +73,7 @@ export class UserService {
     return user;
   }
 
-  async getProfileAccountUser(userId: string): Promise<updateUserDto> {
+  async getProfileAccountUser(userId: string): Promise<getProfileAccountUser> {
     try {
       const user = await this.UserModel.findById(userId);
       if (!user) {
@@ -81,11 +82,12 @@ export class UserService {
           HttpStatus.NOT_FOUND,
         );
       }
-      const result = new updateUserDto();
+      const result = new getProfileAccountUser();
       result.username = user.username;
       result.firstname = user.firstname;
       result.lastname = user.lastname;
       result.phone = user.phone;
+      result.profileImage = user.profileImage;
       return result;
     } catch (err) {
       throw new HttpException(
@@ -122,7 +124,7 @@ export class UserService {
         return createdUser;
       }
     } catch (err) {
-      throw new HttpException('Error to register : ' + err.message, 500);
+      throw new HttpException(err.message, err.status);
     }
   }
 

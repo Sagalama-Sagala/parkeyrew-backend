@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import mongoose from "mongoose";
 import { Product } from "src/product/schemas/product.schema";
+import { Review } from "src/review/schemas/review.schema";
 import { User } from "src/user/schemas/user.schema";
 
 @Schema({
@@ -21,6 +22,10 @@ export class History {
     @ApiProperty()
     @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
     customer: User;
+
+    @ApiProperty()
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Review' })
+    review: Review;
 
     @ApiProperty()
     @Prop({ default: "waiting" })

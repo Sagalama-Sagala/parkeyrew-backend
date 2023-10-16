@@ -4,6 +4,7 @@ import { Review } from "./schemas/review.schema";
 import mongoose from "mongoose";
 import { createReviewDto } from "./dto/create-review.dto";
 import { UserService } from "src/user/user.service";
+import { HistoryService } from "src/history/history.service";
 
 @Injectable()
 export class ReviewService{
@@ -11,6 +12,7 @@ export class ReviewService{
         @InjectModel(Review.name)
         private ReviewModel: mongoose.Model<Review>,
         private readonly userService: UserService,
+        private readonly historService: HistoryService,
     ){}
 
     async findAllByShopId(shopId: string): Promise<Review[]>{
@@ -29,15 +31,17 @@ export class ReviewService{
             }
             const customer = await this.userService.findById(userId);
             const shop = await this.userService.updateReviewStar(review.shop,review.reviewStar);
-            return await this.ReviewModel.create({
+            const newReview = await this.ReviewModel.create({
                 customer: customer,
                 shop: shop,
                 reviewStar: review.reviewStar,
                 text: review.text,
             });
+            await this.historService.addReview(newReview,review.historyId);
+            return newReview;
         }
         catch(err){
-            throw new HttpException('Error to crate review: '+err.message,HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new HttpException('Error to crate review: '+err.message,err.status);
         }
     }
 }
