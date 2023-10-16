@@ -86,9 +86,10 @@ export class ChatGateway {
 
   @SubscribeMessage('connectRoom')
   async onConnectRoom(socket: Socket, room: Room) {
-    const alreadyRoom = await this.roomService.findByProduct(
+    const alreadyRoom = await this.roomService.findByAlreadyRoom(
       room.product,
       room.seller,
+      socket.data.user,
     );
     console.log('alreadyRoom: ', alreadyRoom);
     if (!alreadyRoom) {
