@@ -4,6 +4,7 @@ import { History } from "./schema/history.schema";
 import mongoose from "mongoose";
 import { Product } from "src/product/schemas/product.schema";
 import { User } from "src/user/schemas/user.schema";
+import { Review } from "src/review/schemas/review.schema";
 
 @Injectable()
 export class HistoryService {
@@ -11,6 +12,14 @@ export class HistoryService {
         @InjectModel(History.name)
         private HistoryModel: mongoose.Model<History>,
     ){}
+
+    async findByShop(userId: string): Promise<History[]> {
+        return await this.HistoryModel.find({ shop: userId }).populate({ path: "products", select: "name price deliveryFee" }).populate("review");
+    }
+
+    async findByCustomer(userId: string): Promise<History[]> {
+        return await this.HistoryModel.find({ customer: userId }).populate({ path: "products", select: "name price deliveryFee" }).populate("review");
+    }
 
     async create(product: Product, shop: User, customer: User): Promise<any>{
         try{
@@ -36,6 +45,19 @@ export class HistoryService {
         }
         catch(err){
             throw new HttpException('Error to updating History: '+err.message,err.status);
+        }
+    }
+
+    async addReview(review: Review, historyId: string): Promise<History>{
+        try{
+            return await this.HistoryModel.findByIdAndUpdate(
+                { _id: historyId },
+                { $set: { review: review } },
+                { new: true, runValidators: true },
+            );
+        }
+        catch(err){
+            throw new HttpException(err.message,err.status);
         }
     }
 }

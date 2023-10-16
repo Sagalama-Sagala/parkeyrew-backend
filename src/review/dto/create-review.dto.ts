@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, Max, Min } from "class-validator";
+import { IsNotEmpty, IsString, Max, Min } from "class-validator";
 
 export class createReviewDto{
     @ApiProperty()
@@ -13,4 +13,8 @@ export class createReviewDto{
 
     @ApiProperty()
     readonly text: string;
+
+    @ApiProperty()
+    @IsString()
+    readonly historyId: string;
 }

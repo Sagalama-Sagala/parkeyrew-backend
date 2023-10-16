@@ -62,7 +62,7 @@ export class MinioClientService {
     file: BufferedFile,
     bucketName: string = this.bucketName,
   ) {
-    if (!(file.mimetype.includes('jpeg') || file.mimetype.includes('png'))) {
+    if (!(file.mimetype.includes('jpeg') || file.mimetype.includes('png')||file.mimetype.includes('JPG')||file.mimetype.includes('jpg'))) {
       throw new HttpException(
         'File type not supported',
         HttpStatus.BAD_REQUEST,
