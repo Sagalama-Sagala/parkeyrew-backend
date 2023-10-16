@@ -120,7 +120,7 @@ export class UserService {
         return createdUser;
       }
     } catch (err) {
-      throw new HttpException('Error to register : ' + err.message, 500);
+      throw new HttpException(err.message, err.status);
     }
   }
 
