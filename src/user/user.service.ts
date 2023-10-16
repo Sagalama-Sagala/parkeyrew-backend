@@ -313,7 +313,6 @@ export class UserService {
     if (productIndex === -1) {
       user.wishList.push(product);
     } else {
-      console.log('remove');
       user.wishList.splice(productIndex, 1);
     }
     await user.save();
@@ -325,7 +324,7 @@ export class UserService {
       .select('wishList')
       .populate({
         path: 'wishList',
-        populate: { path: 'owner', select: 'username reviewStar' },
+        populate: { path: 'owner', select: 'username reviewStar profileImage' },
       });
     return user;
   }
