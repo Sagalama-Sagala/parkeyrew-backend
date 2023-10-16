@@ -27,6 +27,7 @@ import { setMainAddressDto } from './dto/set-main-address.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { BufferedFile } from 'src/minio-client/file.model';
 import { getProfileAccountUser } from './dto/get-profile-account-user.dto';
+import { updateUserDescriptionDto } from './dto/update-user-description.dto';
 
 @ApiTags('User')
 @Controller('user')
@@ -142,6 +143,18 @@ export class UserController {
     @Body() userInfo: updateUserDto,
   ): Promise<updateUserDto> {
     return await this.userService.updateById(req.userId, userInfo);
+  }
+
+  @ApiSecurity('JWT-auth')
+  @Put('edit-user-description')
+  async editUserDescription(
+    @Req() req: any,
+    @Body() userDescription: updateUserDescriptionDto,
+  ): Promise<User> {
+    return await this.userService.updateUserDescription(
+      req.userId,
+      userDescription.description,
+    );
   }
 
   @ApiOkResponse({

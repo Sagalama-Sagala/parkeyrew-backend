@@ -38,9 +38,11 @@ export class UserService {
 
   async findUserPageById(shopId: string,userId: string) {
     try {
-      const shop = await this.UserModel.findById(shopId);
-      const user = await this.UserModel.findById(userId);
-      if (!shop) {
+      const user = await this.UserModel.findById(userId).populate({
+        path: 'followerList followingList',
+        select: 'username profileImage',
+      });
+      if (!user) {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
       
@@ -329,6 +331,16 @@ export class UserService {
         path: 'wishList',
         populate: { path: 'owner', select: 'username reviewStar profileImage' },
       });
+    return user;
+  }
+
+  async updateUserDescription(
+    userId: string,
+    description: string,
+  ): Promise<User> {
+    const user = await this.UserModel.findById(userId);
+    user.description = description;
+    await user.save();
     return user;
   }
 
