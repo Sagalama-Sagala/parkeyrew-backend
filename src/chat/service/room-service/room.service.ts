@@ -21,10 +21,15 @@ export class RoomService {
     return createdRoom;
   }
 
-  async findByProduct(product: Product, seller: User): Promise<Room> {
+  async findByAlreadyRoom(
+    product: Product,
+    seller: User,
+    customer: User,
+  ): Promise<Room> {
     const room = await this.RoomModel.findOne({
       product: product,
       seller: seller,
+      customer: customer,
     });
     return room;
   }
