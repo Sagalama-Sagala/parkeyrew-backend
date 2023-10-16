@@ -55,7 +55,7 @@ export class UserController {
   @Get('get-user-page-by-id')
   async getUserById(@Req() req: any) {
     console.log('req', req.userId);
-    return await this.userService.findUserPageById(req.userId);
+    return await this.userService.findUserPageById(req.userId,req.userId);
   }
 
   @ApiOkResponse({
@@ -67,8 +67,8 @@ export class UserController {
   })
   @ApiSecurity('JWT-auth')
   @Get('get-shop-page-by-id/:id')
-  async getShopById(@Param('id') id: string) {
-    return await this.userService.findUserPageById(id);
+  async getShopById(@Req() req: any,@Param('id') id: string) {
+    return await this.userService.findUserPageById(id, req.userId);
   }
 
   @ApiOkResponse({

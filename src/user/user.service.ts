@@ -36,21 +36,24 @@ export class UserService {
     return await this.UserModel.find();
   }
 
-  async findUserPageById(userId: string) {
+  async findUserPageById(shopId: string,userId: string) {
     try {
+      const shop = await this.UserModel.findById(shopId);
       const user = await this.UserModel.findById(userId);
-      if (!user) {
+      if (!shop) {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
-      const products = await this.productService.findAllByOwnerId(userId);
+      
+      const products = await this.productService.findAllByOwnerId(shopId);
       const result = new getUserPageById();
-      result.username = user.username;
-      result.reviewStar = user.reviewStar;
-      result.profileImage = user.profileImage;
-      result.follower = user.followerList;
-      result.following = user.followingList;
-      result.description = user.description;
+      result.username = shop.username;
+      result.reviewStar = shop.reviewStar;
+      result.profileImage = shop.profileImage;
+      result.follower = shop.followerList;
+      result.following = shop.followingList;
+      result.description = shop.description;
       result.products = products;
+      result.isFollow = shop.followerList.includes(user);
       return result;
     } catch (err) {
       throw new HttpException(

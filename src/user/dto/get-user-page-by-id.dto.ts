@@ -19,8 +19,17 @@ export class getUserPageById {
   following: User[];
 
   @ApiProperty()
+  followerStatus: string[];
+
+  @ApiProperty()
+  followingStatus: string[];
+
+  @ApiProperty()
   description: string;
 
   @ApiProperty()
   products: Product[];
+
+  @ApiProperty()
+  isFollow: boolean;
 }
