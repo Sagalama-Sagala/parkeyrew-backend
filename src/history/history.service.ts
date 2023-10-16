@@ -14,11 +14,15 @@ export class HistoryService {
     ){}
 
     async findByShop(userId: string): Promise<History[]> {
-        return await this.HistoryModel.find({ shop: userId }).populate({ path: "products", select: "name price deliveryFee" }).populate("review");
+        return await this.HistoryModel.find({ shop: userId })
+        .populate({ path: "products", select: "name price deliveryFee" })
+        .populate("review");
     }
 
     async findByCustomer(userId: string): Promise<History[]> {
-        return await this.HistoryModel.find({ customer: userId }).populate({ path: "products", select: "name price deliveryFee" }).populate("review");
+        return await this.HistoryModel.find({ customer: userId })
+        .populate({ path: "products", select: "name price deliveryFee" })
+        .populate("review");
     }
 
     async create(product: Product, shop: User, customer: User): Promise<any>{
