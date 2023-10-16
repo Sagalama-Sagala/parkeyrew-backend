@@ -21,8 +21,11 @@ export class RoomService {
     return createdRoom;
   }
 
-  async findByProduct(product: Product): Promise<Room> {
-    const room = await this.RoomModel.findOne({ product: product });
+  async findByProduct(product: Product, seller: User): Promise<Room> {
+    const room = await this.RoomModel.findOne({
+      product: product,
+      seller: seller,
+    });
     return room;
   }
 
