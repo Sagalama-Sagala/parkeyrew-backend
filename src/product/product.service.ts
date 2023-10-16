@@ -52,7 +52,7 @@ export class ProductService {
       remain: { $ne: 0 },
     }).populate({
       path: 'owner',
-      select: 'username reviewStar',
+      select: 'username reviewStar profileImage',
     });
     return products;
   }
