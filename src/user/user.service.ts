@@ -46,6 +46,7 @@ export class UserService {
       const result = new getUserPageById();
       result.username = user.username;
       result.reviewStar = user.reviewStar;
+      result.profileImage = user.profileImage;
       result.follower = user.followerList;
       result.following = user.followingList;
       result.description = user.description;

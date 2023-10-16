@@ -10,6 +10,9 @@ export class getUserPageById {
   reviewStar: number;
 
   @ApiProperty()
+  profileImage: string;
+
+  @ApiProperty()
   follower: User[];
 
   @ApiProperty()
