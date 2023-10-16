@@ -329,6 +329,16 @@ export class UserService {
     return user;
   }
 
+  async updateUserDescription(
+    userId: string,
+    description: string,
+  ): Promise<User> {
+    const user = await this.UserModel.findById(userId);
+    user.description = description;
+    await user.save();
+    return user;
+  }
+
   async editImageUrl(userId: string, image: BufferedFile): Promise<User> {
     const user = await this.UserModel.findById(userId);
     const imageUrl = await this.fileUploadService.uploadSingle(image);

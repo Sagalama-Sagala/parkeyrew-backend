@@ -120,7 +120,7 @@ export class ProductController {
     @Req() req: any,
     @Body() body: decreaseProductCountDto,
   ): Promise<Product> {
-    return await this.productService.decreaseProductCount(req.user, body);
+    return await this.productService.decreaseProductCount(req.userId, body);
   }
 
   @ApiSecurity('JWT-auth')
