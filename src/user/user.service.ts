@@ -36,29 +36,59 @@ export class UserService {
     return await this.UserModel.find();
   }
 
-  async findUserPageById(userId: string) {
+  async findUserPageById(shopId: string,userId: string) {
     try {
+      const shop = await this.UserModel.findById(shopId).populate({
+        path: 'followerList followingList',
+        select: 'username profileImage',
+      });
       const user = await this.UserModel.findById(userId).populate({
         path: 'followerList followingList',
         select: 'username profileImage',
       });
-      if (!user) {
+      if (!shop) {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
-      const products = await this.productService.findAllByOwnerId(userId);
+      
+      const products = await this.productService.findAllByOwnerId(shopId);
       const result = new getUserPageById();
-      result.username = user.username;
-      result.reviewStar = user.reviewStar;
-      result.profileImage = user.profileImage;
-      result.follower = user.followerList;
-      result.following = user.followingList;
-      result.description = user.description;
+      result.username = shop.username;
+      result.reviewStar = shop.reviewStar;
+      result.profileImage = shop.profileImage;
+      result.follower = shop.followerList;
+      result.following = shop.followingList;
+      result.description = shop.description;
       result.products = products;
+      result.isFollow = shop.followerList.includes(user);
+      result.followerStatus = [];
+      result.followingStatus = [];
+      for(let i=0; i<shop.followerList.length; i++) {
+        if(shop.followerList[i]._id.toString() === userId){
+          result.followerStatus.push("it's me");
+        }
+        else if(user.followingList.includes(shop.followerList[i])){
+          result.followerStatus.push("following");
+        }
+        else{
+          result.followerStatus.push("not following");
+        }
+      }
+      for(let i=0; i<shop.followingList.length; i++) {
+        if(shop.followingList[i]._id.toString() === userId){
+          result.followingStatus.push("it's me");
+        }
+        else if(user.followingList.includes(shop.followingList[i])){
+          result.followingStatus.push("following");
+        }
+        else{
+          result.followingStatus.push("not following");
+        }
+      }
       return result;
     } catch (err) {
       throw new HttpException(
-        'Error to get user by id',
-        HttpStatus.INTERNAL_SERVER_ERROR,
+        err.message,
+        err.status,
       );
     }
   }
