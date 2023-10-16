@@ -26,6 +26,7 @@ import { updateUserPasswordDto } from './dto/update-user-password.dto';
 import { setMainAddressDto } from './dto/set-main-address.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { BufferedFile } from 'src/minio-client/file.model';
+import { getProfileAccountUser } from './dto/get-profile-account-user.dto';
 
 @ApiTags('User')
 @Controller('user')
@@ -78,7 +79,7 @@ export class UserController {
   })
   @Get('get-profile-account-user')
   @ApiSecurity('JWT-auth')
-  async getProfileAccountUser(@Req() req: any): Promise<updateUserDto> {
+  async getProfileAccountUser(@Req() req: any): Promise<getProfileAccountUser> {
     return await this.userService.getProfileAccountUser(req.userId);
   }
 
