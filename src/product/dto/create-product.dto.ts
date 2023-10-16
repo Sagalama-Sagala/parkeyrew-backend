@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsPositive, IsString, Max, Min } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsPositive, IsString, Max, Min } from 'class-validator';
 import { BufferedFile } from 'src/minio-client/file.model';
 
 export class createProductDto {
@@ -15,7 +15,8 @@ export class createProductDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsPositive()
+  @IsNumber()
+  @Min(0)
   readonly deliveryFee: number;
 
   @ApiProperty()
