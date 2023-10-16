@@ -38,12 +38,7 @@ export class UserService {
 
   async findUserPageById(userId: string) {
     try {
-      const user = await this.UserModel.findById(userId)
-        .populate({
-          path: 'follower',
-          select: 'username',
-        })
-        .populate({ path: 'following', select: 'username' });
+      const user = await this.UserModel.findById(userId).populate('follower');
       if (!user) {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
