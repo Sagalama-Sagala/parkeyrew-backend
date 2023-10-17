@@ -321,18 +321,17 @@ export class UserService {
       return false;
     }
 
-    const indexUser = user.followingList.indexOf(followUser);
-    if (indexUser > -1) {
-      user.followingList.splice(indexUser, 1);
-    }
-    await user.save();
+    await this.UserModel.findByIdAndUpdate(
+      userId,
+      { $pull : {  followingList: followUser }},
+      { new : true, runValidators: true },
+    )
 
-    const indexFollowUser = followUser.followerList.indexOf(user);
-    if (indexFollowUser > -1) {
-      followUser.followingList.splice(indexFollowUser, 1);
-    }
-    await followUser.save();
-
+    await this.UserModel.findByIdAndUpdate(
+      userId,
+      { $pull : { followerList: user } },
+      { new: true, runValidators: true },
+    )
     return true;
   }
 
