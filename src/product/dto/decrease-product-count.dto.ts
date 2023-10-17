@@ -9,4 +9,8 @@ export class decreaseProductCountDto {
   @ApiProperty()
   @IsString()
   customerId: string;
+
+  @ApiProperty()
+  @IsString()
+  roomId: string;
 }
