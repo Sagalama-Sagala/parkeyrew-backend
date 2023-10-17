@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 import { getRoomDto } from 'src/chat/dto/get-room.dto';
@@ -6,6 +6,7 @@ import { Room } from 'src/chat/schemas/room.schema';
 import { Product } from 'src/product/schemas/product.schema';
 import { User } from 'src/user/schemas/user.schema';
 import { MessageService } from '../message/message.service';
+import { History } from 'src/history/schema/history.schema';
 
 @Injectable()
 export class RoomService {
@@ -174,5 +175,20 @@ export class RoomService {
       newRooms.push(newRoom);
     }
     return newRooms;
+  }
+
+  async updateHistory(roomId: string, history: History): Promise<Room> {
+    try {
+      const updatedRoom = await this.RoomModel.findByIdAndUpdate(
+        roomId,
+        {
+          $set: { history: history },
+        },
+        { new: true, runValidators: true },
+      );
+      return updatedRoom;
+    } catch (err) {
+      throw new HttpException(err.message, err.status);
+    }
   }
 }

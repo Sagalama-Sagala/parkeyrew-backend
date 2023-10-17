@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
+import { History } from 'src/history/schema/history.schema';
 import { Product } from 'src/product/schemas/product.schema';
 import { User } from 'src/user/schemas/user.schema';
 
@@ -17,6 +18,12 @@ export class Room {
     ref: 'Product',
   })
   product: Product;
+
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'History',
+  })
+  history: History;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
