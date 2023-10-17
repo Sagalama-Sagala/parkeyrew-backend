@@ -50,7 +50,6 @@ export class ChatGateway {
         socket.handshake.headers.authorization,
       );
       const user: User = await this.userService.findById(decodedToken.id);
-      console.log(user.username);
 
       if (!user) {
         return this.disconnect(socket);
@@ -58,9 +57,7 @@ export class ChatGateway {
         socket.data.user = user;
         const rooms = await this.roomService.getRoomsForUser(user);
         const connectedUser = await this.connectedUserService.findByUser(user);
-        console.log(connectedUser);
         if (!connectedUser) {
-          console.log('ine');
           await this.connectedUserService.create({ socketId: socket.id, user });
         }
         return this.server.to(socket.id).emit('rooms', rooms);
