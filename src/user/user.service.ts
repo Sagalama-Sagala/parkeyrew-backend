@@ -59,7 +59,13 @@ export class UserService {
       result.following = shop.followingList;
       result.description = shop.description;
       result.products = products;
-      result.isFollow = shop.followerList.includes(user);
+      result.isFollow = false;
+      for(let i=0; i<shop.followerList.length; i++) {
+        if(shop.followerList[i]._id.toString() === userId){
+          result.isFollow = true;
+          break;
+        }
+      }
       result.followerStatus = [];
       result.followingStatus = [];
       for (let i = 0; i < shop.followerList.length; i++) {
@@ -288,21 +294,19 @@ export class UserService {
   }
   async followUserById(userId: string, followUserId: string) {
     if (userId === followUserId) {
-      return false; // You can't follow yourself
+      return false;
     }
 
     const user = await this.UserModel.findById(userId);
     const followUser = await this.UserModel.findById(followUserId);
 
     if (!user || !followUser) {
-      return false; // User or followUser not found
+      return false;
     }
 
-    // Update the 'following' list of the current user
     user.followingList.push(followUser);
     await user.save();
 
-    // Update the 'followers' list of the user being followed
     followUser.followerList.push(user);
     await followUser.save();
 
