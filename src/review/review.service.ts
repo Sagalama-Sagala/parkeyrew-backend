@@ -17,9 +17,11 @@ export class ReviewService {
 
   async findAllByShopId(shopId: string): Promise<Review[]> {
     try {
-      return await this.ReviewModel.find({ shop: shopId }).sort({
-        createdAt: -1,
-      });
+      return await this.ReviewModel.find({ shop: shopId })
+        .sort({
+          createdAt: -1,
+        })
+        .populate({ path: 'shop', select: 'username profileImage' });
     } catch (err) {
       throw new HttpException(
         'Error while get all reviews: ' + err.message,
