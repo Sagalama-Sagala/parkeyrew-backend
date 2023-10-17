@@ -133,7 +133,7 @@ export class UserController {
 
     return { message: 'User unfollowed successfully' };
   }
-  ////////////////////////////////////////////////////////////////////////////////////////////
+  
   @Put('edit-user-info')
   async editUserInfo(
     @Req() req: any,
