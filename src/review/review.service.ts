@@ -21,7 +21,7 @@ export class ReviewService {
         .sort({
           createdAt: -1,
         })
-        .populate({ path: 'shop', select: 'username profileImage' });
+        .populate({ path: 'customer', select: 'username profileImage' });
     } catch (err) {
       throw new HttpException(
         'Error while get all reviews: ' + err.message,
