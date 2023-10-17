@@ -15,13 +15,15 @@ export class HistoryService {
 
     async findByShop(userId: string): Promise<History[]> {
         return await this.HistoryModel.find({ shop: userId })
-        .populate({ path: "product", select: "name price deliveryFee" })
+        // .populate({ path: "product", select: "name price deliveryFee" })
+        .populate({ path: "product" })
         .populate("review");
     }
 
     async findByCustomer(userId: string): Promise<History[]> {
         return await this.HistoryModel.find({ customer: userId })
-        .populate({ path: "product", select: "name price deliveryFee" })
+        // .populate({ path: "product", select: "name price deliveryFee" })
+        .populate({ path: "product" })
         .populate("review");
     }
 
