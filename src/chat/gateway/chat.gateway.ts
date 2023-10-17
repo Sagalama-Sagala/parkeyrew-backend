@@ -19,6 +19,7 @@ import { getMessageDto } from '../dto/get-message.dto';
   cors: {
     origin: [
       'https://parkeyrew-frontend.chompukyrc.com',
+      'https://parkeyrew-backend.chompukyrc.com',
       'https://hoppscotch.io',
       'http://localhost:3000',
       'http://localhost:5173',
