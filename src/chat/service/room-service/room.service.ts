@@ -85,7 +85,8 @@ export class RoomService {
         select: 'username',
       })
       .populate({ path: 'customer', select: 'username' })
-      .populate({ path: 'product', select: 'name price' });
+      .populate({ path: 'product', select: 'name price' })
+      .populate('history');
     const newRooms: getRoomDto[] = [];
     for (const room of rooms) {
       const newRoom = new getRoomDto();
@@ -111,6 +112,7 @@ export class RoomService {
       newRoom.lastMessage = await this.messageService.findLastOne(
         room._id.toString(),
       );
+      newRoom.history = room.history;
       newRoom.product = room.product;
       newRoom.id = room._id.toString();
       newRooms.push(newRoom);
