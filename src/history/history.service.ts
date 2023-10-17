@@ -22,8 +22,7 @@ export class HistoryService {
     }
 
     async findByCustomer(userId: string): Promise<History[]> {
-        return await this.HistoryModel.find({ customer: userId })
-        // .populate({ path: "product", select: "name price deliveryFee" })
+        const res = await this.HistoryModel.find({ customer: userId })
         .populate({ path: "product" })
         .populate({ path: "shop" , select: '-password'})
         .populate("review");
