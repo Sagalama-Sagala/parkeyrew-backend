@@ -25,9 +25,10 @@ export class ProductService {
     private ProductModel: mongoose.Model<Product>,
     @Inject(forwardRef(() => UserService))
     private userService: UserService,
+    @Inject(forwardRef(() => RoomService))
+    private readonly roomService: RoomService,
     private readonly historyService: HistoryService,
     private readonly fileUploadService: FileUploadService,
-    private readonly roomService: RoomService,
   ) {}
 
   async findAll(): Promise<Product[]> {

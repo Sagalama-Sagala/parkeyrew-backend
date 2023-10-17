@@ -6,15 +6,15 @@ import { UserModule } from 'src/user/user.module';
 import { ProductService } from './product.service';
 import { HistoryModule } from 'src/history/history.module';
 import { FileUploadModule } from 'src/file-upload/file-upload.module';
-import { RoomService } from 'src/chat/service/room-service/room.service';
+import { ChatModule } from 'src/chat/chat.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: 'Product', schema: ProductSchema }]),
     forwardRef(() => UserModule),
+    forwardRef(() => ChatModule),
     HistoryModule,
     FileUploadModule,
-    RoomService,
   ],
   controllers: [ProductController],
   providers: [ProductService],
