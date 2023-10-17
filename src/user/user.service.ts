@@ -314,25 +314,30 @@ export class UserService {
   }
 
   async unfollowUserById(userId: string, followUserId: string) {
-    const user = await this.UserModel.findById(userId);
-    const followUser = await this.UserModel.findById(followUserId);
-
-    if (!user || !followUser) {
-      return false;
+    try{
+      const user = await this.UserModel.findById(userId);
+      const followUser = await this.UserModel.findById(followUserId);
+  
+      if (!user || !followUser) {
+        return false;
+      }
+  
+      await this.UserModel.findByIdAndUpdate(
+        userId,
+        { $pull : {  followingList: followUser }},
+        { new : true, runValidators: true },
+      )
+  
+      await this.UserModel.findByIdAndUpdate(
+        userId,
+        { $pull : { followerList: user } },
+        { new: true, runValidators: true },
+      )
+      return true;
     }
-
-    await this.UserModel.findByIdAndUpdate(
-      userId,
-      { $pull : {  followingList: followUser }},
-      { new : true, runValidators: true },
-    )
-
-    await this.UserModel.findByIdAndUpdate(
-      userId,
-      { $pull : { followerList: user } },
-      { new: true, runValidators: true },
-    )
-    return true;
+    catch(err){
+      throw new HttpException(err.message,err.status);
+    }
   }
 
   async toggleWishList(userId: string, productId: string): Promise<User> {
