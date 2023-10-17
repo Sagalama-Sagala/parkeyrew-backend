@@ -324,13 +324,13 @@ export class UserService {
   
       await this.UserModel.findByIdAndUpdate(
         userId,
-        { $pull : {  followingList: followUser }},
+        { $pull : { followingList: followUser._id }},
         { new : true, runValidators: true },
       )
   
       await this.UserModel.findByIdAndUpdate(
         followUserId,
-        { $pull : { followerList: user } },
+        { $pull : { followerList: user._id } },
         { new: true, runValidators: true },
       )
       return true;
