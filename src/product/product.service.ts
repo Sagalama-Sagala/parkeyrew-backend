@@ -74,7 +74,7 @@ export class ProductService {
         _id: { $ne: productId },
         remain: { $ne: 0 },
       })
-        .populate({ path: 'owner', select: 'username reviewStar' })
+        .populate({ path: 'owner', select: 'username reviewStar profileImage' })
         .sort({ createdAt: -1 })
         .limit(4);
       const result = new getInfoProductPageDto();
