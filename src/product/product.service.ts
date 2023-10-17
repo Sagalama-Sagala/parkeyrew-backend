@@ -171,6 +171,12 @@ export class ProductService {
       if (!product) {
         throw new HttpException('Product not found: ' + body.productId, 404);
       }
+      console.log(
+        'from product servie',
+        product.name,
+        shop.username,
+        customer.username,
+      );
       await this.historyService.create(product, shop, customer);
       return await this.ProductModel.findByIdAndUpdate(
         { _id: body.productId },

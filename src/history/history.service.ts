@@ -26,11 +26,16 @@ export class HistoryService {
       .populate({ path: 'product' })
       .populate({ path: 'shop', select: '-password' })
       .populate('review');
-    console.log(res);
     return res;
   }
 
   async create(product: Product, shop: User, customer: User): Promise<any> {
+    console.log(
+      'create history: ',
+      product.name,
+      shop.username,
+      customer.username,
+    );
     try {
       return await this.HistoryModel.create({
         product: product,
