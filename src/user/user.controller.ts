@@ -106,7 +106,6 @@ export class UserController {
     description: 'Cannot edit user info',
   })
 
-  ////////////////////////////////////////////////////////////////////////////////
   @ApiSecurity('JWT-auth')
   @Post('follow-user-by-id')
   async followUserById(@Req() req: any): Promise<any> {
@@ -114,8 +113,6 @@ export class UserController {
       req.userId,
       req.body.userId,
     );
-    //return await this.userService.followUserById(req.userId, req.body.userId);
-    // return { message: 'User followed successfully', result };
     if (!result) {
       throw new NotFoundException('User not found or already followed.');
     }
