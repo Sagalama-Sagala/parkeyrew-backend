@@ -56,7 +56,10 @@ export class ChatGateway {
       } else {
         socket.data.user = user;
         const rooms = await this.roomService.getRoomsForUser(user);
-        await this.connectedUserService.create({ socketId: socket.id, user });
+        const connectedUser = this.connectedUserService.findByUser(user);
+        if (!connectedUser) {
+          await this.connectedUserService.create({ socketId: socket.id, user });
+        }
         return this.server.to(socket.id).emit('rooms', rooms);
       }
     } catch {
@@ -91,7 +94,6 @@ export class ChatGateway {
       room.seller,
       socket.data.user,
     );
-    console.log('alreadyRoom: ', alreadyRoom);
     if (!alreadyRoom) {
       const newRoom = await this.roomService.createRoom(room, socket.data.user);
       const getNewRoom = await this.roomService.getRoom(
