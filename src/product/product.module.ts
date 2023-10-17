@@ -12,9 +12,9 @@ import { ChatModule } from 'src/chat/chat.module';
   imports: [
     MongooseModule.forFeature([{ name: 'Product', schema: ProductSchema }]),
     forwardRef(() => UserModule),
+    forwardRef(() => ChatModule),
     HistoryModule,
     FileUploadModule,
-    ChatModule,
   ],
   controllers: [ProductController],
   providers: [ProductService],
