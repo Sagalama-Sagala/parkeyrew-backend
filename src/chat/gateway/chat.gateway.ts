@@ -184,7 +184,7 @@ export class ChatGateway {
             room.customer,
           );
           this.server.to(connectedUser.socketId).emit('notiMessage', {
-            username: socket.data.username,
+            username: socket.data.user.username,
             text: createMessage.text,
             roomId: room._id.toString(),
           });
@@ -193,7 +193,7 @@ export class ChatGateway {
             room.seller,
           );
           this.server.to(connectedUser.socketId).emit('notiMessage', {
-            username: socket.data.username,
+            username: socket.data.user.username,
             text: createMessage.text,
             roomId: room._id.toString(),
           });
