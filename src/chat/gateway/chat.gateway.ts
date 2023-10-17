@@ -44,7 +44,6 @@ export class ChatGateway {
 
   async handleConnection(socket: Socket) {
     try {
-      console.log('... on connect');
       const decodedToken = await this.authService.verifyJwt(
         socket.handshake.headers.authorization,
       );
@@ -57,13 +56,14 @@ export class ChatGateway {
         socket.data.user = user;
         const rooms = await this.roomService.getRoomsForUser(user);
         const connectedUser = this.connectedUserService.findByUser(user);
+        console.log(connectedUser);
         if (!connectedUser) {
+          console.log('ine');
           await this.connectedUserService.create({ socketId: socket.id, user });
         }
         return this.server.to(socket.id).emit('rooms', rooms);
       }
     } catch {
-      console.log('...not connect');
       return this.disconnect(socket);
     }
   }
