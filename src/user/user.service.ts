@@ -318,17 +318,19 @@ export class UserService {
     const followUser = await this.UserModel.findById(followUserId);
 
     if (!user || !followUser) {
-      return false; // User or followUser not found
+      return false;
     }
 
-    // Remove followUserId from the 'following' list of the current user
-    user.followingList = user.followingList.filter((id) => id !== followUser);
+    const indexUser = user.followingList.indexOf(followUser);
+    if (indexUser > -1) {
+      user.followingList.splice(indexUser, 1);
+    }
     await user.save();
 
-    // Remove userId from the 'followers' list of the user being unfollowed
-    followUser.followerList = followUser.followerList.filter(
-      (id) => id !== user,
-    );
+    const indexFollowUser = followUser.followerList.indexOf(user);
+    if (indexFollowUser > -1) {
+      followUser.followingList.splice(indexFollowUser, 1);
+    }
     await followUser.save();
 
     return true;
