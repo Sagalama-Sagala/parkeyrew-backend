@@ -44,7 +44,6 @@ export class ChatGateway {
 
   async handleConnection(socket: Socket) {
     try {
-      console.log('... on connect');
       const decodedToken = await this.authService.verifyJwt(
         socket.handshake.headers.authorization,
       );
@@ -56,11 +55,15 @@ export class ChatGateway {
       } else {
         socket.data.user = user;
         const rooms = await this.roomService.getRoomsForUser(user);
-        await this.connectedUserService.create({ socketId: socket.id, user });
+        const connectedUser = await this.connectedUserService.findByUser(user);
+        console.log(connectedUser);
+        if (!connectedUser) {
+          console.log('ine');
+          await this.connectedUserService.create({ socketId: socket.id, user });
+        }
         return this.server.to(socket.id).emit('rooms', rooms);
       }
     } catch {
-      console.log('...not connect');
       return this.disconnect(socket);
     }
   }
@@ -91,7 +94,6 @@ export class ChatGateway {
       room.seller,
       socket.data.user,
     );
-    console.log('alreadyRoom: ', alreadyRoom);
     if (!alreadyRoom) {
       const newRoom = await this.roomService.createRoom(room, socket.data.user);
       const getNewRoom = await this.roomService.getRoom(
@@ -162,7 +164,6 @@ export class ChatGateway {
     const newMessage = message.message;
     const room = await this.roomService.findById(roomId);
     const joinedUsers = await this.joinedRoomService.findByRoom(room);
-    console.log(joinedUsers.length);
     const createMessage = await this.messageService.create({
       ...newMessage,
       user: socket.data.user,
@@ -179,6 +180,27 @@ export class ChatGateway {
             : false,
       };
       this.server.to(user.socketId).emit('message', newMessage);
+      if (joinedUsers.length === 1) {
+        if (user.user._id.toString() === room.seller._id.toString()) {
+          const connectedUser = await this.connectedUserService.findByUser(
+            room.customer,
+          );
+          this.server.to(connectedUser.socketId).emit('notiMessage', {
+            username: socket.data.user.username,
+            text: createMessage.text,
+            roomId: room._id.toString(),
+          });
+        } else {
+          const connectedUser = await this.connectedUserService.findByUser(
+            room.seller,
+          );
+          this.server.to(connectedUser.socketId).emit('notiMessage', {
+            username: socket.data.user.username,
+            text: createMessage.text,
+            roomId: room._id.toString(),
+          });
+        }
+      }
     }
   }
 }

@@ -15,8 +15,8 @@ export class ConnectedUserService {
     return this.ConnectedUserModel.create(connectedUser);
   }
 
-  async findByUser(user: User): Promise<ConnectedUser[]> {
-    return this.ConnectedUserModel.find({ user: user });
+  async findByUser(user: User): Promise<ConnectedUser> {
+    return this.ConnectedUserModel.findOne({ user: user });
   }
 
   async deleteBySocketId(socketId: string) {
