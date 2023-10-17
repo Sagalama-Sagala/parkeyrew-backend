@@ -6,6 +6,7 @@ import { UserModule } from 'src/user/user.module';
 import { ProductService } from './product.service';
 import { HistoryModule } from 'src/history/history.module';
 import { FileUploadModule } from 'src/file-upload/file-upload.module';
+import { RoomService } from 'src/chat/service/room-service/room.service';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { FileUploadModule } from 'src/file-upload/file-upload.module';
     forwardRef(() => UserModule),
     HistoryModule,
     FileUploadModule,
+    RoomService,
   ],
   controllers: [ProductController],
   providers: [ProductService],

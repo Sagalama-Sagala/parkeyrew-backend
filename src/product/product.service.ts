@@ -16,6 +16,7 @@ import { decreaseProductCountDto } from './dto/decrease-product-count.dto';
 import { HistoryService } from 'src/history/history.service';
 import { BufferedFile } from 'src/minio-client/file.model';
 import { FileUploadService } from 'src/file-upload/file-upload.service';
+import { RoomService } from 'src/chat/service/room-service/room.service';
 
 @Injectable()
 export class ProductService {
@@ -26,6 +27,7 @@ export class ProductService {
     private userService: UserService,
     private readonly historyService: HistoryService,
     private readonly fileUploadService: FileUploadService,
+    private readonly roomService: RoomService,
   ) {}
 
   async findAll(): Promise<Product[]> {
@@ -177,7 +179,8 @@ export class ProductService {
         shop.username,
         customer.username,
       );
-      await this.historyService.create(product, shop, customer);
+      const history = await this.historyService.create(product, shop, customer);
+      await this.roomService.updateHistory(body.roomId, history);
       return await this.ProductModel.findByIdAndUpdate(
         { _id: body.productId },
         { $set: { remain: product.remain - 1 } },

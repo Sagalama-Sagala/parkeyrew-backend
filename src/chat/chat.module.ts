@@ -32,5 +32,6 @@ import { ChatGateway } from './gateway/chat.gateway';
     ConnectedUserService,
     JoinedRoomService,
   ],
+  exports: [RoomService],
 })
 export class ChatModule {}
