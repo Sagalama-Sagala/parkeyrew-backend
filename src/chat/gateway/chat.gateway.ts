@@ -55,7 +55,7 @@ export class ChatGateway {
       } else {
         socket.data.user = user;
         const rooms = await this.roomService.getRoomsForUser(user);
-        const connectedUser = this.connectedUserService.findByUser(user);
+        const connectedUser = await this.connectedUserService.findByUser(user);
         console.log(connectedUser);
         if (!connectedUser) {
           console.log('ine');
