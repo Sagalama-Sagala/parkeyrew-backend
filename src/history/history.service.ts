@@ -24,6 +24,7 @@ export class HistoryService {
         return await this.HistoryModel.find({ customer: userId })
         // .populate({ path: "product", select: "name price deliveryFee" })
         .populate({ path: "product" })
+        .populate({ path: "shop" })
         .populate("review");
     }
 
