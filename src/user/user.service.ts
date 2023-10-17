@@ -36,7 +36,7 @@ export class UserService {
     return await this.UserModel.find();
   }
 
-  async findUserPageById(shopId: string,userId: string) {
+  async findUserPageById(shopId: string, userId: string) {
     try {
       const shop = await this.UserModel.findById(shopId).populate({
         path: 'followerList followingList',
@@ -49,7 +49,7 @@ export class UserService {
       if (!shop) {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
-      
+
       const products = await this.productService.findAllByOwnerId(shopId);
       const result = new getUserPageById();
       result.username = shop.username;
@@ -62,34 +62,27 @@ export class UserService {
       result.isFollow = shop.followerList.includes(user);
       result.followerStatus = [];
       result.followingStatus = [];
-      for(let i=0; i<shop.followerList.length; i++) {
-        if(shop.followerList[i]._id.toString() === userId){
+      for (let i = 0; i < shop.followerList.length; i++) {
+        if (shop.followerList[i]._id.toString() === userId) {
           result.followerStatus.push("it's me");
-        }
-        else if(user.followingList.includes(shop.followerList[i])){
-          result.followerStatus.push("following");
-        }
-        else{
-          result.followerStatus.push("not following");
+        } else if (user.followingList.includes(shop.followerList[i])) {
+          result.followerStatus.push('following');
+        } else {
+          result.followerStatus.push('not following');
         }
       }
-      for(let i=0; i<shop.followingList.length; i++) {
-        if(shop.followingList[i]._id.toString() === userId){
+      for (let i = 0; i < shop.followingList.length; i++) {
+        if (shop.followingList[i]._id.toString() === userId) {
           result.followingStatus.push("it's me");
-        }
-        else if(user.followingList.includes(shop.followingList[i])){
-          result.followingStatus.push("following");
-        }
-        else{
-          result.followingStatus.push("not following");
+        } else if (user.followingList.includes(shop.followingList[i])) {
+          result.followingStatus.push('following');
+        } else {
+          result.followingStatus.push('not following');
         }
       }
       return result;
     } catch (err) {
-      throw new HttpException(
-        err.message,
-        err.status,
-      );
+      throw new HttpException(err.message, err.status);
     }
   }
 

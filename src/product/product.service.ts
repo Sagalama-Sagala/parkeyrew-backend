@@ -69,7 +69,7 @@ export class ProductService {
         { _id: productId },
         { $set: { viewCount: product.viewCount + 1 } },
         { new: true, runValidators: true },
-      ).populate({ path: 'owner', select: 'username reviewStar' });
+      ).populate({ path: 'owner', select: 'username reviewStar profileImage' });
       const productsOfUser = await this.ProductModel.find({
         _id: { $ne: productId },
         remain: { $ne: 0 },
