@@ -63,6 +63,7 @@ export class UserService {
       for(let i=0; i<shop.followerList.length; i++) {
         if(shop.followerList[i]._id.toString() === userId){
           result.isFollow = true;
+          break;
         }
       }
       result.followerStatus = [];
