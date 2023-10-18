@@ -11,6 +11,7 @@ import { ConnectedUserSchema } from './schemas/connected-user.schema';
 import { ConnectedUserService } from './service/connected-user/connected-user.service';
 import { JoinedRoomService } from './service/joined-room/joined-room.service';
 import { ChatGateway } from './gateway/chat.gateway';
+import { FileUploadModule } from 'src/file-upload/file-upload.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { ChatGateway } from './gateway/chat.gateway';
       { name: 'ConnectedUser', schema: ConnectedUserSchema },
     ]),
     AuthModule,
+    FileUploadModule,
     forwardRef(() => UserModule),
   ],
   providers: [

@@ -114,20 +114,14 @@ export class ProductService {
     productId: string,
     images: { [key: string]: BufferedFile[] },
   ) {
-    console.log(productId);
-    console.log(images);
-    console.log(1);
     const product = await this.ProductModel.findById(productId);
-    console.log(2);
     const imageUrl = await this.fileUploadService.uploadMany(images);
-    console.log(3);
     product.productImage = [];
     for (const item of imageUrl) {
       console.log(item);
       product.productImage.push(item);
       console.log(product.productImage);
     }
-    console.log(4);
     await product.save();
     return product;
   }
