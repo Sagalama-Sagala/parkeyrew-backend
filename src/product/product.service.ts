@@ -94,15 +94,11 @@ export class ProductService {
     }
   }
 
-  async findByIdAndUpdateLikeCount(productId: string): Promise<Product>{
+  async updateLikeCount(productId: string, likeCount: number): Promise<Product>{
     try{
-      const product = await this.ProductModel.findById(productId);
-      if(!product){
-        throw new HttpException('Product Not Found: '+productId,404);
-      }
       return await this.ProductModel.findByIdAndUpdate(
         productId,
-        { likeCount: product.likeCount - 1 },
+        { likeCount: likeCount },
         { new: true, runValidators: true },
       );
     }catch(err){
