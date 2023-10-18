@@ -136,10 +136,15 @@ export class RoomService {
     const rooms = await this.RoomModel.find({ customer: user })
       .populate({
         path: 'seller',
-        select: 'username',
+        select: 'username profileImage',
       })
-      .populate({ path: 'customer', select: 'username' })
-      .populate({ path: 'product', select: 'name price' });
+      .populate({
+        path: 'customer',
+        select: 'username profileImage ',
+        populate: 'mainAddress',
+      })
+      .populate({ path: 'product', select: 'name price productImage' })
+      .populate('history');
     const newRooms: getRoomDto[] = [];
     for (const room of rooms) {
       const newRoom = new getRoomDto();
@@ -154,6 +159,7 @@ export class RoomService {
       newRoom.lastMessage = await this.messageService.findLastOne(
         room._id.toString(),
       );
+      newRoom.history = room.history;
       newRoom.product = room.product;
       newRoom.id = room._id.toString();
       newRooms.push(newRoom);
@@ -164,11 +170,17 @@ export class RoomService {
   async getRoomCustomerForUsers(user: User): Promise<getRoomDto[]> {
     const rooms = await this.RoomModel.find({ seller: user })
       .populate({
-        path: 'customer',
-        select: 'username',
+        path: 'seller',
+        select: 'username profileImage',
       })
-      .populate({ path: 'customer', select: 'username' })
-      .populate({ path: 'product', select: 'name price' });
+      .populate({
+        path: 'customer',
+        select: 'username profileImage ',
+        populate: 'mainAddress',
+      })
+      .populate({ path: 'product', select: 'name price productImage' })
+      .populate('history');
+
     const newRooms: getRoomDto[] = [];
     for (const room of rooms) {
       const newRoom = new getRoomDto();
@@ -183,6 +195,7 @@ export class RoomService {
       newRoom.lastMessage = await this.messageService.findLastOne(
         room._id.toString(),
       );
+      newRoom.history = room.history;
       newRoom.product = room.product;
       newRoom.id = room._id.toString();
       newRooms.push(newRoom);
