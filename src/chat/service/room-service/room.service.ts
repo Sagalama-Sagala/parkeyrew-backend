@@ -86,7 +86,8 @@ export class RoomService {
       })
       .populate({
         path: 'customer',
-        select: 'username profileImage mainAddress',
+        select: 'username profileImage ',
+        populate: 'mainAddress',
       })
       .populate({ path: 'product', select: 'name price productImage' })
       .populate('history');
