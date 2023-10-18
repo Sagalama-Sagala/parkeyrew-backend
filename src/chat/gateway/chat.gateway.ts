@@ -169,7 +169,7 @@ export class ChatGateway {
       user: socket.data.user,
       room: room,
       otherUserRead: joinedUsers.length === 1 ? false : true,
-    },message.img);
+    });
     for (const user of joinedUsers) {
       const newMessage: getMessageDto = {
         text: createMessage.text,
