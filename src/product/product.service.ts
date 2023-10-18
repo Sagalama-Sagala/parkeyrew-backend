@@ -32,7 +32,7 @@ export class ProductService {
   ) {}
 
   async findAll(): Promise<Product[]> {
-    const product = await this.ProductModel.find().populate('owner').sort({ viewCount: 1});
+    const product = await this.ProductModel.find().populate('owner').sort({ viewCount: -1});
     return product;
   }
 
