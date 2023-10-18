@@ -7,19 +7,13 @@ import { AuthService } from 'src/auth/auth.service';
 import { Server, Socket } from 'socket.io';
 import { User } from 'src/user/schemas/user.schema';
 import { UserService } from 'src/user/user.service';
-import {
-  UnauthorizedException,
-  UploadedFile,
-  UseInterceptors,
-} from '@nestjs/common';
+import { UnauthorizedException } from '@nestjs/common';
 import { Room } from 'src/chat/schemas/room.schema';
 import { RoomService } from 'src/chat/service/room-service/room.service';
 import { MessageService } from 'src/chat/service/message/message.service';
 import { JoinedRoomService } from 'src/chat/service/joined-room/joined-room.service';
 import { ConnectedUserService } from '../service/connected-user/connected-user.service';
 import { getMessageDto } from '../dto/get-message.dto';
-import { BufferedFile } from 'src/minio-client/file.model';
-import { FileInterceptor } from '@nestjs/platform-express';
 
 @WebSocketGateway({
   cors: {
@@ -128,6 +122,8 @@ export class ChatGateway {
     const newMessage: getMessageDto[] = messages.map((message) => ({
       text: message.text,
       createdAt: message.createdAt,
+      img: message.img,
+      isImg: message.isImg,
       isMyMessage:
         socket.data.user._id.toString() === message.user._id.toString()
           ? true
@@ -163,10 +159,6 @@ export class ChatGateway {
     await this.joinedRoomService.deleteBySocketId(socket.id);
   }
 
-  @UseInterceptors(FileInterceptor('image'))
-  @SubscribeMessage('addImgMessage')
-  async onAddImgMessage(socket: Socket, @UploadedFile() image: BufferedFile) {}
-
   @SubscribeMessage('addMessage')
   async onAddMessage(socket: Socket, message: any) {
     console.log(message.img);
@@ -184,6 +176,8 @@ export class ChatGateway {
       const newMessage: getMessageDto = {
         text: createMessage.text,
         createdAt: createMessage.createdAt,
+        isImg: createMessage.isImg,
+        img: createMessage.img,
         isMyMessage:
           socket.data.user._id.toString() === user.user._id.toString()
             ? true
