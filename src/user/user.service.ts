@@ -342,7 +342,7 @@ export class UserService {
 
   async toggleWishList(userId: string, productId: string): Promise<User> {
     const user = await this.UserModel.findById(userId);
-    const product = await this.productService.findById(productId);
+    const product = await this.productService.findByIdAndUpdateLikeCount(productId);
     const productIndex = user.wishList.findIndex(
       (item) => item._id.toString() === product._id.toString(),
     );
