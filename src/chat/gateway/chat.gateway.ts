@@ -159,6 +159,7 @@ export class ChatGateway {
 
   @SubscribeMessage('addMessage')
   async onAddMessage(socket: Socket, message: any) {
+    console.log(message.img);
     const roomId = message.roomId;
     const newMessage = message.message;
     const room = await this.roomService.findById(roomId);
