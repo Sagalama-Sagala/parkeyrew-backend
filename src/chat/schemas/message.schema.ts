@@ -10,6 +10,12 @@ export class Message {
   @Prop()
   text: string;
 
+  @Prop()
+  img: string;
+
+  @Prop({ default: false })
+  isImg: boolean;
+
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
