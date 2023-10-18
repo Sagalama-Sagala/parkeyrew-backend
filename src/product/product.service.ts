@@ -32,18 +32,18 @@ export class ProductService {
   ) {}
 
   async findAll(): Promise<Product[]> {
-    const product = await this.ProductModel.find().populate('owner').sort({ viewCount: -1});
+    const product = await this.ProductModel.find({ remain: { $gt : 0 } }).populate('owner').sort({ viewCount: -1});
     return product;
   }
 
   async find4Latest(): Promise<Product[]> {
-    return await this.ProductModel.find({ remain: { $ne: 0 } })
+    return await this.ProductModel.find({ remain: { $gt: 0 } })
       .sort({ createdAt: -1 })
       .limit(4);
   }
 
   async findByFilter(): Promise<Product[] | undefined> {
-    const products = await this.ProductModel.find({ remain: { $ne: 0 } }).sort({
+    const products = await this.ProductModel.find({ remain: { $gt: 0 } }).sort({
       createdAt: -1,
     });
     return products;
@@ -52,7 +52,7 @@ export class ProductService {
   async findAllByOwnerId(userId: string): Promise<Product[]> {
     const products = await this.ProductModel.find({
       owner: userId,
-      remain: { $ne: 0 },
+      remain: { $gt: 0 },
     }).populate({
       path: 'owner',
       select: 'username reviewStar profileImage',
