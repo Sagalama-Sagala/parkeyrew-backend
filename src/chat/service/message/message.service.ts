@@ -14,9 +14,7 @@ export class MessageService {
     private readonly fileUploadService: FileUploadService,
   ) {}
 
-  async create(message: Message, img: BufferedFile): Promise<Message> {
-    const ImageUrl = img ? await this.fileUploadService.uploadSingle(img) : null
-    message.img = ImageUrl;
+  async create(message: Message): Promise<Message> {
     return await this.MessageModel.create(message);
   }
 
