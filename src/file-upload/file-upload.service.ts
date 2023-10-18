@@ -7,8 +7,9 @@ export class FileUploadService {
   constructor(private minioClientService: MinioClientService) {}
 
   async uploadSingle(image: BufferedFile): Promise<string> {
+    console.log("image in uploadSingle:",image);
     const uploaded_image = await this.minioClientService.upload(image);
-    console.log(uploaded_image);
+    console.log("upload img: ",uploaded_image);
 
     return uploaded_image.url.toString();
   }

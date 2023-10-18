@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 import { Message } from 'src/chat/schemas/message.schema';
+import { FileUploadService } from 'src/file-upload/file-upload.service';
+import { BufferedFile } from 'src/minio-client/file.model';
 import { User } from 'src/user/schemas/user.schema';
 
 @Injectable()
@@ -9,6 +11,7 @@ export class MessageService {
   constructor(
     @InjectModel(Message.name)
     private MessageModel: mongoose.Model<Message>,
+    private readonly fileUploadService: FileUploadService,
   ) {}
 
   async create(message: Message): Promise<Message> {

@@ -94,6 +94,22 @@ export class ProductService {
     }
   }
 
+  async findByIdAndUpdateLikeCount(productId: string): Promise<Product>{
+    try{
+      const product = await this.ProductModel.findById(productId);
+      if(!product){
+        throw new HttpException('Product Not Found: '+productId,404);
+      }
+      return await this.ProductModel.findByIdAndUpdate(
+        productId,
+        { likeCount: product.likeCount - 1 },
+        { new: true, runValidators: true },
+      );
+    }catch(err){
+      throw new HttpException(err.message, err.status);
+    }
+  }
+
   async create(product: createProductDto, userId: string): Promise<Product> {
     try {
       const user = await this.userService.findById(userId);
@@ -114,20 +130,14 @@ export class ProductService {
     productId: string,
     images: { [key: string]: BufferedFile[] },
   ) {
-    console.log(productId);
-    console.log(images);
-    console.log(1);
     const product = await this.ProductModel.findById(productId);
-    console.log(2);
     const imageUrl = await this.fileUploadService.uploadMany(images);
-    console.log(3);
     product.productImage = [];
     for (const item of imageUrl) {
       console.log(item);
       product.productImage.push(item);
       console.log(product.productImage);
     }
-    console.log(4);
     await product.save();
     return product;
   }
