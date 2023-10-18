@@ -84,7 +84,10 @@ export class RoomService {
         path: 'seller',
         select: 'username profileImage',
       })
-      .populate({ path: 'customer', select: 'username profileImage' })
+      .populate({
+        path: 'customer',
+        select: 'username profileImage mainAddress',
+      })
       .populate({ path: 'product', select: 'name price productImage' })
       .populate('history');
     const newRooms: getRoomDto[] = [];
