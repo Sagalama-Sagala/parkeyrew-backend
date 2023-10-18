@@ -377,6 +377,7 @@ export class UserService {
 
   async editImageUrl(userId: string, image: BufferedFile): Promise<User> {
     const user = await this.UserModel.findById(userId);
+    console.log("image in editImageUrl:",image);
     const imageUrl = await this.fileUploadService.uploadSingle(image);
     user.profileImage = imageUrl;
     await user.save();
