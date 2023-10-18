@@ -342,14 +342,16 @@ export class UserService {
 
   async toggleWishList(userId: string, productId: string): Promise<User> {
     const user = await this.UserModel.findById(userId);
-    const product = await this.productService.findByIdAndUpdateLikeCount(productId);
+    const product = await this.productService.findById(productId);
     const productIndex = user.wishList.findIndex(
       (item) => item._id.toString() === product._id.toString(),
     );
     if (productIndex === -1) {
       user.wishList.push(product);
+      await this.productService.updateLikeCount(productId,product.likeCount+1);
     } else {
       user.wishList.splice(productIndex, 1);
+      await this.productService.updateLikeCount(productId,product.likeCount-1);
     }
     await user.save();
     return user;
