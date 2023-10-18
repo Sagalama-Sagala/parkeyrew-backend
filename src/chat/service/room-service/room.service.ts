@@ -44,10 +44,16 @@ export class RoomService {
     const room = await this.RoomModel.findById(roomId)
       .populate({
         path: 'seller',
-        select: 'username',
+        select: 'username profileImage',
       })
-      .populate({ path: 'customer', select: 'username' })
-      .populate({ path: 'product', select: 'name price' });
+      .populate({
+        path: 'customer',
+        select: 'username profileImage ',
+        populate: 'mainAddress',
+      })
+      .populate({ path: 'product', select: 'name price productImage' })
+      .populate('history');
+
     const newRoom = new getRoomDto();
     if (user._id.toString() === room.customer._id.toString()) {
       newRoom.user = {
@@ -68,6 +74,7 @@ export class RoomService {
         user: room.customer,
       };
     }
+    newRoom.history = room.history;
     newRoom.id = room._id.toString();
     newRoom.product = room.product;
     newRoom.lastMessage = await this.messageService.findLastOne(
