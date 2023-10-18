@@ -105,7 +105,6 @@ export class UserController {
   @ApiBadRequestResponse({
     description: 'Cannot edit user info',
   })
-
   @ApiSecurity('JWT-auth')
   @Post('follow-user-by-id')
   async followUserById(@Req() req: any): Promise<any> {
@@ -133,7 +132,7 @@ export class UserController {
 
     return { message: 'User unfollowed successfully' };
   }
-  
+
   @Put('edit-user-info')
   async editUserInfo(
     @Req() req: any,
