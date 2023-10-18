@@ -7,13 +7,19 @@ import { AuthService } from 'src/auth/auth.service';
 import { Server, Socket } from 'socket.io';
 import { User } from 'src/user/schemas/user.schema';
 import { UserService } from 'src/user/user.service';
-import { UnauthorizedException } from '@nestjs/common';
+import {
+  UnauthorizedException,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { Room } from 'src/chat/schemas/room.schema';
 import { RoomService } from 'src/chat/service/room-service/room.service';
 import { MessageService } from 'src/chat/service/message/message.service';
 import { JoinedRoomService } from 'src/chat/service/joined-room/joined-room.service';
 import { ConnectedUserService } from '../service/connected-user/connected-user.service';
 import { getMessageDto } from '../dto/get-message.dto';
+import { BufferedFile } from 'src/minio-client/file.model';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @WebSocketGateway({
   cors: {
@@ -156,6 +162,10 @@ export class ChatGateway {
   async onLeaveRoom(socket: Socket) {
     await this.joinedRoomService.deleteBySocketId(socket.id);
   }
+
+  @UseInterceptors(FileInterceptor('image'))
+  @SubscribeMessage('addImgMessage')
+  async onAddImgMessage(socket: Socket, @UploadedFile() image: BufferedFile) {}
 
   @SubscribeMessage('addMessage')
   async onAddMessage(socket: Socket, message: any) {
