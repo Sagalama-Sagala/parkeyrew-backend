@@ -94,6 +94,22 @@ export class ProductService {
     }
   }
 
+  async findByIdAndUpdateLikeCount(productId: string): Promise<Product>{
+    try{
+      const product = await this.ProductModel.findById(productId);
+      if(!product){
+        throw new HttpException('Product Not Found: '+productId,404);
+      }
+      return await this.ProductModel.findByIdAndUpdate(
+        productId,
+        { likeCount: product.likeCount - 1 },
+        { new: true, runValidators: true },
+      );
+    }catch(err){
+      throw new HttpException(err.message, err.status);
+    }
+  }
+
   async create(product: createProductDto, userId: string): Promise<Product> {
     try {
       const user = await this.userService.findById(userId);
